@@ -2,8 +2,6 @@
 
 [简体中文](README.md) | [English](README_EN.md)
 
-> **Unofficial project, not affiliated with Kimi or Moonshot AI.** It is a derivative of the open-source project [open-kimi-ppt-skill](https://github.com/binaryify/open-kimi-ppt-skill) (by binaryify, MIT license).
-
 **What it is:** a small tool that helps you (or your AI assistant) turn a simple text list into the "source files" of a slide deck, and checks every page for text that does not fit and colours that are hard to read.
 
 **What you get:** a folder of slide source files in a format called PPTD (plain text files you can edit in any text editor), plus a check report.

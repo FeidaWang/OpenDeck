@@ -2,8 +2,6 @@
 
 [简体中文](README.md) | [English](README_EN.md)
 
-> **非官方项目，与 Kimi 及 Moonshot AI 无关。** 它是开源项目 [open-kimi-ppt-skill](https://github.com/binaryify/open-kimi-ppt-skill)（作者 binaryify，MIT 许可）的衍生版本。
-
 **这是什么：** 一个小工具，帮你（或你的 AI 助手）用一份简单的文字清单搭出幻灯片的“源文件”，并检查每一页的字有没有放不下、颜色看不看得清。
 
 **你能得到什么：** 一个文件夹，里面是一种叫 PPTD 的幻灯片源文件（全是普通文本文件，可以用任何文本编辑器改），外加一份检查报告。
