@@ -1,0 +1,4 @@
+# Explicit setup for deterministic text measurement and local layout audit.
+# These are not installed automatically by the plugin.
+PyYAML>=6.0.3,<7
+Pillow>=12,<14

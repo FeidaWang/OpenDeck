@@ -1,0 +1,4 @@
+interface:
+  display_name: "Open Kimi PPT for Codex"
+  short_description: "Editable slides with measured layout and final-file review"
+  default_prompt: "Use $open-kimi-ppt with my current model and reasoning setting to build an editable presentation, check the layout and review the actual exported PPTX."

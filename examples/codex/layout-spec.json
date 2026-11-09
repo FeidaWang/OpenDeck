@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "title": "A practical AI workshop pilot",
+  "style": "warm",
+  "slide_count": 4,
+  "slides": [
+    {
+      "layout": "cover",
+      "title": "A practical AI workshop pilot",
+      "subtitle": "A small beginner session for the community library",
+      "eyebrow": "WORKSHOP PROPOSAL"
+    },
+    {
+      "layout": "metrics",
+      "title": "Keep the first session small",
+      "metrics": [
+        {"value": "20", "label": "Available seats"},
+        {"value": "90 min", "label": "Proposed duration"},
+        {"value": "1", "label": "Saturday session"}
+      ],
+      "source": "Source: supplied workshop brief; session is proposed"
+    },
+    {
+      "layout": "two_column",
+      "title": "Confirm the practical setup",
+      "columns": [
+        {
+          "heading": "Session plan",
+          "bullets": [
+            "Volunteer facilitator.",
+            "One proposed Saturday session.",
+            "Beginner audience."
+          ]
+        },
+        {
+          "heading": "Before the session",
+          "bullets": [
+            "Participants bring laptops.",
+            "Confirm a suitable date.",
+            "Check the room setup."
+          ]
+        }
+      ]
+    },
+    {
+      "layout": "bullets",
+      "title": "Decide whether to trial the workshop",
+      "bullets": [
+        "Confirm whether the library wants to run a small pilot.",
+        "Agree a date and confirm the volunteer facilitator.",
+        "Invite participants after the practical details are agreed.",
+        "Review the pilot before proposing further sessions."
+      ],
+      "source": "Proposed next steps; no attendance or outcome estimates"
+    }
+  ]
+}

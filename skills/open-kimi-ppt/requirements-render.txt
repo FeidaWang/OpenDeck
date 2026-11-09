@@ -1,0 +1,3 @@
+# Optional actual final-PPTX rendering; LibreOffice must also be installed explicitly.
+# This helper does not export PPTD to PPTX.
+PyMuPDF>=1.26,<2

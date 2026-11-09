@@ -1,0 +1,35 @@
+✔ codex forwards arguments as separate argv values without shell expansion (244.988523ms)
+✔ codex preserves the workflow's failure exit status (219.499626ms)
+✔ missing Python reports an explicit error and does not install anything (70.963928ms)
+✔ top-level and codex help work without Python and leave the home directory untouched (488.350778ms)
+✔ doctor dispatch leaves existing skill and Codex configuration unchanged (274.156188ms)
+✔ portable plugin metadata preserves identity and uses fixed skill discovery (0.574346ms)
+✔ npm packaging includes all workflow runtime scripts, config, agents and references (872.261897ms)
+✔ parses PPTD manifests and keeps file access inside the project (4.129302ms)
+✔ preserves escaped apostrophes and hash characters in quoted YAML scalars (0.507076ms)
+✔ serves the PPTD editor and its JavaScript modules (3065.056792ms)
+✔ returns 404 for files outside the packaged editor (12.228035ms)
+✔ supports HEAD requests without a response body (5.086725ms)
+✔ installs the packaged skill into a custom skills directory (165.731258ms)
+✔ installs into ~/.agents/skills when no target is provided (non-interactive) (147.768766ms)
+✔ supports -y for non-interactive default install (135.091271ms)
+✔ installs into multiple --target directories (149.26196ms)
+✔ --all installs into detected agent directories and skips missing ones (167.364045ms)
+✔ --all warns and installs nothing when no agent directory exists (91.284255ms)
+✔ --all detects Codex at CODEX_HOME without creating ~/.codex (154.155418ms)
+✔ overwrites an existing installation by default (263.126327ms)
+✔ accepts legacy --force without changing overwrite behavior (231.504891ms)
+✔ restores the previous installation if publishing the staged copy fails (302.614695ms)
+✔ preserves the previous copy and reports its path if rollback also fails (257.4598ms)
+✔ an active install lock leaves the existing skill untouched (244.553327ms)
+✔ help documents interactive install and -y for agents (93.734708ms)
+✔ -h shows help (110.382751ms)
+✔ --version and -V print the package version (320.090123ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3298.99255

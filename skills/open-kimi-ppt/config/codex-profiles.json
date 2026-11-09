@@ -1,0 +1,36 @@
+{
+  "schema_version": 2,
+  "checked_on": "2026-11-09",
+  "target_desktop": {
+    "version": "26.1103.60933",
+    "released_on": "2026-11-09",
+    "evidence": "user_reported"
+  },
+  "execution": {
+    "mode": "single_model",
+    "model": "inherit_current_host",
+    "reasoning_effort": "inherit_current_host",
+    "max_parallel_workers": 1,
+    "switches_models": false,
+    "changes_reasoning_effort": false,
+    "spawns_agents": false
+  },
+  "quality_policy": {
+    "identical_at_every_model_and_effort": true,
+    "measured_layout_required": true,
+    "all_pages_visual_review_required": true,
+    "final_pptx_render_review_required": true,
+    "hard_failures_block_export": true,
+    "unresolved_findings_block_completion": true,
+    "missing_capabilities_block_instead_of_skip": true
+  },
+  "notes": [
+    "Logical director, builder and reviewer passes execute sequentially in the current host.",
+    "Model catalog discovery is optional diagnostic metadata, not a generation prerequisite.",
+    "No preset raises or lowers reasoning effort or weakens quality checks.",
+    "Structural, layout, source visual, final PPTX visual and application playback evidence are distinct."
+  ],
+  "sources": [
+    "https://learn.chatgpt.com/docs/app-server"
+  ]
+}

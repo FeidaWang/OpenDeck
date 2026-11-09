@@ -1,0 +1,131 @@
+{
+  "release": "1.4.0-codex.1",
+  "actual_trials": [
+    {
+      "fixture": "single-model-trial-v3",
+      "slide_count": 6,
+      "measured_text_boxes": 46,
+      "layout_status": "passed",
+      "issues": [],
+      "stage_status": {
+        "story": "done",
+        "design": "done",
+        "assets": "done",
+        "pages": "done",
+        "integrate": "done",
+        "structure": "done",
+        "layout": "done",
+        "render": "pending",
+        "visual_review": "pending",
+        "export": "pending",
+        "final_output_review": "pending"
+      },
+      "layout_report_sha256": "6e1bd7976412659894cbaca48d7b34464a9899ec3af6097c7ac08944ffde3b09",
+      "source_files": [
+        {
+          "path": "deck.pptd",
+          "sha256": "bce82a59db41fea907e847dbd003ea4fe27e5b6cb5df0bed18ab6409ad392088"
+        },
+        {
+          "path": "media/slide-006.png",
+          "sha256": "3ffffea08861a9690cd3b7df8a9f5b81b6bc0c50fc8760523cffe7e383493ad6"
+        },
+        {
+          "path": "pages/01.page",
+          "sha256": "23fbb17bc03aae362a3f97c815a0c330f693b1c72d49c226a84d138e469bb2a8"
+        },
+        {
+          "path": "pages/02.page",
+          "sha256": "8c96efbe5fe033826c5da72b8e1f86bd02fae8210805872db699d07f86b372e5"
+        },
+        {
+          "path": "pages/03.page",
+          "sha256": "21e1f369f7afcf48f25eed0f440ed3a20cd97b67eb3c94d80ab94165f479e1f8"
+        },
+        {
+          "path": "pages/04.page",
+          "sha256": "6b9aeec8415fb774f1c99c96a6dfdf7435c01f9e221429d588c68a69784e7908"
+        },
+        {
+          "path": "pages/05.page",
+          "sha256": "1cf14bb045e138a7e60dd6a674a0ffcbc912c5746f126982c27e61a4ace3549b"
+        },
+        {
+          "path": "pages/06.page",
+          "sha256": "380c03533190b7e55e5323aac1e7592c1c7e07cb922b33cd623b2009eea4bd41"
+        },
+        {
+          "path": "run/layout-policy.json",
+          "sha256": "edecba077b0630a7a295da1a0a4a66e31c75b222e396caf9c86c2c26909193d6"
+        },
+        {
+          "path": "run/layout-spec.json",
+          "sha256": "fa7495e1f58b2fd079afeabbdb04cfbc3b6ec053d68b52792854edbd3fef1466"
+        }
+      ],
+      "complete": false
+    },
+    {
+      "fixture": "bundled-example-trial-v3",
+      "slide_count": 4,
+      "measured_text_boxes": 30,
+      "layout_status": "passed",
+      "issues": [],
+      "stage_status": {
+        "story": "done",
+        "design": "done",
+        "assets": "done",
+        "pages": "done",
+        "integrate": "done",
+        "structure": "done",
+        "layout": "done",
+        "render": "pending",
+        "visual_review": "pending",
+        "export": "pending",
+        "final_output_review": "pending"
+      },
+      "layout_report_sha256": "878e07e9c77dab5cbb4b6f1a5bf926555d9c51fb59f5a503b3b1620642a9a6a3",
+      "source_files": [
+        {
+          "path": "deck.pptd",
+          "sha256": "4cee592a837d5c9fb70b8bcd37644c596edec51fb30f6f306788d59440ccf761"
+        },
+        {
+          "path": "pages/01.page",
+          "sha256": "e89e3684fd8a84a5595ffc3b019903f801ef7d64846e7b7c1b1f587f3f432889"
+        },
+        {
+          "path": "pages/02.page",
+          "sha256": "6080424fdc5c95bebbb3f392074e92e85e4d88e379cb3696cec10cd37933ac90"
+        },
+        {
+          "path": "pages/03.page",
+          "sha256": "cdf33b8f85cd3d560afa79dbf5c1a947d9e59461f8780540c4c86d4af2530150"
+        },
+        {
+          "path": "pages/04.page",
+          "sha256": "ef904ad814a85a86ecb6b1d8409da95f56b334f1b672988c66d8de922e656c6e"
+        },
+        {
+          "path": "run/layout-policy.json",
+          "sha256": "b73eb498559f3fad1aece1df79ef57257194881813c01c82b72ef62c93aa24bb"
+        },
+        {
+          "path": "run/layout-spec.json",
+          "sha256": "b64089f609f2f51ad3917963f8e7c3ffeaef13182303d1be671f4b20a87d92dc"
+        }
+      ],
+      "complete": false
+    }
+  ],
+  "runtime_sha256": {
+    "layout_quality.py": "6cb304db9de1e75ea921bfa86b7915011354b20163402457bdefc66b1c016fbb",
+    "codex_workflow.py": "76bbd1303240fd2373b296743997a3bb321e45bf8145bfe5988dfbf4b0ac05bf",
+    "export_pptx.py": "1ef24ce58c1df277e734a5d51b70e02ad7a320f165f6d2d621f5512014312b84",
+    "asset_audit.py": "669652f75ac2586bf8cae1534e65c9239db27106710dd37f3293974494992f43",
+    "export_images.py": "0db73cb903ecca5bc2035f72fdfd5515987217ec477d1f2ddd627c5f3b4fae45",
+    "layout_engine.py": "73b38bfc130b6d924ffe93605279d57cab9da9d09c0f48e22a5bc58af4160c79",
+    "render_pptx.py": "3d78c45ea0adebb7ad76cadbb6c60f795f58326dc2afd98cefc6b68305a5db24"
+  },
+  "scope": "Source acceptance only; actual render and final-file checks remain pending for these new fixtures."
+}

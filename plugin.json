@@ -1,0 +1,20 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "open-kimi-ppt-skill",
+  "version": "1.4.0-codex.1",
+  "description": "Create editable presentations with one active model, deterministic layout checks and final PPTX render review.",
+  "author": {
+    "name": "binaryify"
+  },
+  "license": "MIT",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Open Kimi PPT",
+        "shortDescription": "Build and verify slide decks",
+        "longDescription": "Create editable PPTD presentations using the current Codex model and reasoning setting. Includes measured text layout, curated templates, persistent progress, source checks and review of actual exported PPTX renders. Available rendering tools and fonts determine which checks can be completed.",
+        "defaultPrompt": "Use Open Kimi PPT with my current model and reasoning setting to build a clear editable presentation, check its layout, and review the actual exported PPTX."
+      }
+    }
+  }
+}

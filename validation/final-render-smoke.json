@@ -1,0 +1,154 @@
+{
+  "status": "failed_visual_acceptance",
+  "fixture": "Historical original example/yu7-ppt/yu7.pptx; unchanged",
+  "conversion": "passed",
+  "source_pptx": {
+    "path": "deck.pptx",
+    "sha256": "94bc1fd81868905de07c82dd84a4605aa9bd36a81d96c363e1437b6b5e74c274"
+  },
+  "slide_count": 8,
+  "renderer": {
+    "name": "LibreOffice",
+    "version": "LibreOfficeDev 26.8.0.0.alpha0 2c87e51eeaa2b413ff4ae097b2705eea1995d8e5"
+  },
+  "inspection": {
+    "method": "actual_contact_sheet_and_page_7_full_size",
+    "pages_in_overview": 8,
+    "detail_pages": [
+      7
+    ]
+  },
+  "findings": [
+    {
+      "page": 7,
+      "severity": "error",
+      "description": "Background illustration contains pre-existing numerical labels that visually collide with foreground metric text and reduce readability. Conversion success is not visual acceptance."
+    }
+  ],
+  "playback": "not_performed",
+  "note": "This historical fixture is a renderer smoke test, not a newly authored or accepted presentation.",
+  "source_fixture": "example/yu7-ppt/yu7.pptx",
+  "conversion_report": {
+    "schema_version": 1,
+    "status": "passed",
+    "kind": "final_pptx_render",
+    "render_source": "final_pptx",
+    "slide_count": 8,
+    "source_pptx": {
+      "path": "deck.pptx",
+      "sha256": "94bc1fd81868905de07c82dd84a4605aa9bd36a81d96c363e1437b6b5e74c274"
+    },
+    "renderer": {
+      "name": "LibreOffice",
+      "version": "LibreOfficeDev 26.8.0.0.alpha0 2c87e51eeaa2b413ff4ae097b2705eea1995d8e5"
+    },
+    "dpi": 144,
+    "files": [
+      {
+        "path": "deck.pptx",
+        "sha256": "94bc1fd81868905de07c82dd84a4605aa9bd36a81d96c363e1437b6b5e74c274"
+      },
+      {
+        "path": "run/final-renders/page-001.png",
+        "sha256": "253c4687ff528790a32615e9c22d7e8e9969c1355f94bdf7a3a8740eae68ef9a"
+      },
+      {
+        "path": "run/final-renders/page-002.png",
+        "sha256": "a8aee073b6a74e5bb115932e8e0524a250543e53c369a959c7e8a68df38426cd"
+      },
+      {
+        "path": "run/final-renders/page-003.png",
+        "sha256": "f1a3d9b880365316502f2eaebd8fdec72bf94b907dc981a1e91cafa699dd0f44"
+      },
+      {
+        "path": "run/final-renders/page-004.png",
+        "sha256": "0827ccdb10cfc868a228080c9bd42648dca30795f4694d9f9cbb6c2296014fb6"
+      },
+      {
+        "path": "run/final-renders/page-005.png",
+        "sha256": "9317faac8947847bffe78ae9c176b6d764bf04819cc6dd7e81e42187e009b772"
+      },
+      {
+        "path": "run/final-renders/page-006.png",
+        "sha256": "8062db9a8bd9a8a1b65f9e14af07bb498e4e781e21a70013b933aee48880b60f"
+      },
+      {
+        "path": "run/final-renders/page-007.png",
+        "sha256": "8d636260db37e9409a175dd8df4b1a0525575ef1e46730bc3e849a86194c4cdd"
+      },
+      {
+        "path": "run/final-renders/page-008.png",
+        "sha256": "714fd6ff2b8960de00066a85a355488329fc79090cd791a74b6a9ccabacf4450"
+      }
+    ],
+    "pages": [
+      {
+        "page": 1,
+        "sha256": "253c4687ff528790a32615e9c22d7e8e9969c1355f94bdf7a3a8740eae68ef9a",
+        "width": 1921,
+        "height": 1080,
+        "status": "rendered",
+        "path": "run/final-renders/page-001.png"
+      },
+      {
+        "page": 2,
+        "sha256": "a8aee073b6a74e5bb115932e8e0524a250543e53c369a959c7e8a68df38426cd",
+        "width": 1921,
+        "height": 1080,
+        "status": "rendered",
+        "path": "run/final-renders/page-002.png"
+      },
+      {
+        "page": 3,
+        "sha256": "f1a3d9b880365316502f2eaebd8fdec72bf94b907dc981a1e91cafa699dd0f44",
+        "width": 1921,
+        "height": 1080,
+        "status": "rendered",
+        "path": "run/final-renders/page-003.png"
+      },
+      {
+        "page": 4,
+        "sha256": "0827ccdb10cfc868a228080c9bd42648dca30795f4694d9f9cbb6c2296014fb6",
+        "width": 1921,
+        "height": 1080,
+        "status": "rendered",
+        "path": "run/final-renders/page-004.png"
+      },
+      {
+        "page": 5,
+        "sha256": "9317faac8947847bffe78ae9c176b6d764bf04819cc6dd7e81e42187e009b772",
+        "width": 1921,
+        "height": 1080,
+        "status": "rendered",
+        "path": "run/final-renders/page-005.png"
+      },
+      {
+        "page": 6,
+        "sha256": "8062db9a8bd9a8a1b65f9e14af07bb498e4e781e21a70013b933aee48880b60f",
+        "width": 1921,
+        "height": 1080,
+        "status": "rendered",
+        "path": "run/final-renders/page-006.png"
+      },
+      {
+        "page": 7,
+        "sha256": "8d636260db37e9409a175dd8df4b1a0525575ef1e46730bc3e849a86194c4cdd",
+        "width": 1921,
+        "height": 1080,
+        "status": "rendered",
+        "path": "run/final-renders/page-007.png"
+      },
+      {
+        "page": 8,
+        "sha256": "714fd6ff2b8960de00066a85a355488329fc79090cd791a74b6a9ccabacf4450",
+        "width": 1921,
+        "height": 1080,
+        "status": "rendered",
+        "path": "run/final-renders/page-008.png"
+      }
+    ],
+    "visual_review": "not_performed",
+    "playback": "not_performed"
+  },
+  "images_in_distribution": false
+}

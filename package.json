@@ -1,0 +1,67 @@
+{
+  "name": "open-kimi-ppt-skill",
+  "version": "1.4.0-codex.1",
+  "description": "Editable presentation workflow for one active Codex model, measured layouts and evidence-based PPTX review.",
+  "license": "MIT",
+  "author": "binaryify",
+  "homepage": "https://github.com/binaryify/open-kimi-ppt-skill#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/binaryify/open-kimi-ppt-skill.git"
+  },
+  "bugs": {
+    "url": "https://github.com/binaryify/open-kimi-ppt-skill/issues"
+  },
+  "keywords": [
+    "ppt",
+    "pptx",
+    "slides",
+    "presentation",
+    "pptd",
+    "kimi",
+    "agent-skill",
+    "codex",
+    "claude-code",
+    "cursor",
+    "codebuddy"
+  ],
+  "type": "module",
+  "bin": {
+    "open-kimi-ppt-skill": "bin/open-kimi-ppt-skill.js"
+  },
+  "files": [
+    "bin/",
+    "editor/",
+    "lib/",
+    "plugin.json",
+    "skills/open-kimi-ppt/SKILL.md",
+    "skills/open-kimi-ppt/reference/",
+    "skills/open-kimi-ppt/references/",
+    "skills/open-kimi-ppt/scripts/",
+    "skills/open-kimi-ppt/config/",
+    "skills/open-kimi-ppt/agents/",
+    "skills/open-kimi-ppt/requirements*.txt",
+    "README.md",
+    "README_EN.md",
+    "AGENTS.md",
+    "CODEX_START.md",
+    "UPGRADE_NOTES.md",
+    "VALIDATION.md",
+    "examples/codex/",
+    "theme.md",
+    "theme_EN.md",
+    "!**/__pycache__/**",
+    "!**/*.py[cod]",
+    "!**/.pytest_cache/**",
+    "!**/.DS_Store",
+    "!**/_user_meta.json"
+  ],
+  "scripts": {
+    "test": "node --test",
+    "pack:check": "npm pack --dry-run",
+    "prepublishOnly": "npm test"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

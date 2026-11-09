@@ -1,0 +1,10 @@
+{
+  "title": "A practical AI workshop pilot",
+  "audience": "Community library organisers",
+  "goal": "Decide whether to trial a small beginner workshop",
+  "slide_count": 4,
+  "language": "en-AU",
+  "delivery": "reading",
+  "facts": ["20 available seats", "One proposed 90-minute Saturday session", "Volunteer facilitator", "Participants bring laptops"],
+  "constraints": ["Keep text and diagrams editable", "Do not invent attendance, cost or outcome statistics", "No required generated images"]
+}

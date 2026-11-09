@@ -1,0 +1,17 @@
+{
+  "schema_version": 2,
+  "evidence": "template_only_replace_with_observations",
+  "current_model": null,
+  "current_effort": null,
+  "models": [],
+  "execution": {
+    "mode": "single_model",
+    "max_parallel_workers": 1
+  },
+  "notes": [
+    "This optional snapshot records observations only; it does not select a model or reasoning effort.",
+    "Retain exact current_model and current_effort strings, including unknown or future values. Omit unobserved fields.",
+    "No model catalog, model switch, subagent, image generation tool or minimum reasoning effort is required.",
+    "Rendering and actual visual review remain mandatory for every model and reasoning setting."
+  ]
+}
