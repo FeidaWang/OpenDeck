@@ -1,6 +1,6 @@
 # PPTD Format Specification
 
-PPTD (PPT-DSL) is a YAML abstraction layer for describing, generating and editing presentation slides. This package implements PPTD-to-PPTX export through a browser writer; it does not bundle a PPTX-to-PPTD importer. Conversion fidelity depends on the selected writer/importer and must be checked against the original. Do not assume lossless bidirectional conversion.
+PPTD (PPT-DSL) is a YAML abstraction layer for describing, generating and editing presentation slides. This package reads and checks PPTD; it bundles neither a PPTD-to-PPTX writer nor a PPTX-to-PPTD importer.
 
 ---
 

@@ -1,7 +1,7 @@
 {
   "name": "open-kimi-ppt-skill",
-  "version": "1.4.0-codex.1",
-  "description": "Editable presentation workflow for one active Codex model, measured layouts and evidence-based PPTX review.",
+  "version": "1.5.0-claude.1",
+  "description": "Editable PPTD presentation workflow for one active host model, with measured layout checks. Does not render slides or write PPTX.",
   "license": "MIT",
   "author": "binaryify",
   "homepage": "https://github.com/binaryify/open-kimi-ppt-skill#readme",
@@ -14,16 +14,15 @@
   },
   "keywords": [
     "ppt",
-    "pptx",
     "slides",
     "presentation",
     "pptd",
-    "kimi",
     "agent-skill",
     "codex",
     "claude-code",
     "cursor",
-    "codebuddy"
+    "codebuddy",
+    "layout"
   ],
   "type": "module",
   "bin": {
@@ -31,8 +30,6 @@
   },
   "files": [
     "bin/",
-    "editor/",
-    "lib/",
     "plugin.json",
     "skills/open-kimi-ppt/SKILL.md",
     "skills/open-kimi-ppt/reference/",
@@ -46,7 +43,6 @@
     "AGENTS.md",
     "CODEX_START.md",
     "UPGRADE_NOTES.md",
-    "VALIDATION.md",
     "examples/codex/",
     "theme.md",
     "theme_EN.md",
@@ -57,9 +53,7 @@
     "!**/_user_meta.json"
   ],
   "scripts": {
-    "test": "node --test",
-    "pack:check": "npm pack --dry-run",
-    "prepublishOnly": "npm test"
+    "test": "node --test"
   },
   "engines": {
     "node": ">=18"

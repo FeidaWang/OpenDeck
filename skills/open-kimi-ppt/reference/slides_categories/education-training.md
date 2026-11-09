@@ -228,7 +228,7 @@ The visual brief states at least:
 
 ### 5. Pre-Delivery Validation
 
-Use the existing PPTD / PPTX validation and screenshot workflow to check overflow, overlap, truncation, garbled text, low contrast, missing page numbers, and missing sources. Review key pages individually at minimum; do not declare completion from thumbnails alone.
+Use the PPTD structure and layout checks to find overflow, overlap, truncation, missing glyphs, low contrast, missing page numbers, and missing sources. A person still has to look at key pages in an application that can open the deck.
 
 ## 11. Delivery Acceptance and Reverse Checks
 

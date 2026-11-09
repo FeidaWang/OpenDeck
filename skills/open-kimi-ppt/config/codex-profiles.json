@@ -18,17 +18,16 @@
   "quality_policy": {
     "identical_at_every_model_and_effort": true,
     "measured_layout_required": true,
-    "all_pages_visual_review_required": true,
-    "final_pptx_render_review_required": true,
-    "hard_failures_block_export": true,
     "unresolved_findings_block_completion": true,
-    "missing_capabilities_block_instead_of_skip": true
+    "missing_capabilities_block_instead_of_skip": true,
+    "hard_failures_block_completion": true,
+    "visual_review_and_pptx_export_available": false
   },
   "notes": [
     "Logical director, builder and reviewer passes execute sequentially in the current host.",
     "Model catalog discovery is optional diagnostic metadata, not a generation prerequisite.",
     "No preset raises or lowers reasoning effort or weakens quality checks.",
-    "Structural, layout, source visual, final PPTX visual and application playback evidence are distinct."
+    "Structural and layout evidence are distinct. Visual review, PPTX export and application playback are not available in this project and are reported as not performed."
   ],
   "sources": [
     "https://learn.chatgpt.com/docs/app-server"

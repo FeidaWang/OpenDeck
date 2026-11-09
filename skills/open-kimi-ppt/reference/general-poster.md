@@ -225,7 +225,7 @@ In an actual task, regenerate `style.md` from the subject, assets, and reading r
 - When the user only wants images such as PNG or JPG, still complete the editable source in PPTD first, then screenshot or render it to an image.
 - Check out-of-bounds, overflow, overlap, and structural issues against the pptd format rules; visually review focus, reading order, contrast, font sizes, and image cropping.
 - Look at the full-page overview first, then the details: the overview should reveal the subject and at least one visual memory point; if the main impression is a title, regular cards, and button-like color blocks, restructure first instead of only fine-tuning font sizes and spacing.
-- After fixing problem pages, validate and review again, and only then package the PPTX or output images.
+- After fixing problem pages, validate and review again, and only then hand the project over.
 
 ## Pre-Production Checklist
 

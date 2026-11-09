@@ -45,7 +45,8 @@ class FinalPptxRenderTests(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
-        self.root = Path(self.temporary.name) / "project with spaces"
+        # Resolve the temp dir: on macOS /var is a symlink to /private/var and the CLI resolves paths.
+        self.root = Path(self.temporary.name).resolve() / "project with spaces"
         self.root.mkdir()
         self.source = self.root / "deck.pptx"
         make_pptx(self.source)

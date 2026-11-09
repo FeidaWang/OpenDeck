@@ -24,7 +24,10 @@ test("installs the packaged skill into a custom skills directory", () => {
     const result = runCli(["install", "--target", target]);
     assert.equal(result.status, 0, result.stderr);
     assert.equal(existsSync(join(target, "open-kimi-ppt", "SKILL.md")), true);
-    assert.equal(existsSync(join(target, "open-kimi-ppt", "scripts", "export_pptx.py")), true);
+    assert.equal(existsSync(join(target, "open-kimi-ppt", "scripts", "pptd_project.py")), true);
+    for (const removed of ["export_pptx.py", "export_images.py", "export_host.html"]) {
+      assert.equal(existsSync(join(target, "open-kimi-ppt", "scripts", removed)), false);
+    }
     assert.equal(existsSync(join(target, "open-kimi-ppt", "scripts", "codex_workflow.py")), true);
     assert.equal(existsSync(join(target, "open-kimi-ppt", "config", "codex-profiles.json")), true);
     assert.equal(existsSync(join(target, "open-kimi-ppt", "_user_meta.json")), false);
@@ -280,7 +283,7 @@ test("-h shows help", () => {
 
 test("--version and -V print the package version", () => {
   const { version } = JSON.parse(readFileSync(join(projectRoot, "package.json"), "utf8"));
-  for (const args of [["--version"], ["-V"], ["serve", "--version"], ["codex", "--version"]]) {
+  for (const args of [["--version"], ["-V"], ["codex", "--version"]]) {
     const result = runCli(args);
     assert.equal(result.status, 0, `${args.join(" ")}: ${result.stderr}`);
     assert.equal(result.stdout.trim(), version);

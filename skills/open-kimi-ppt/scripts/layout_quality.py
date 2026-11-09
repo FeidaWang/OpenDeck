@@ -346,7 +346,7 @@ def audit_deck(manifest: Path, policy: dict | Path | None = None) -> dict:
         import yaml
     except ImportError as exc:
         raise LayoutError("PyYAML is required for layout checks") from exc
-    from export_pptx import find_manifest, read_yaml_mapping, image_sources, safe_project_path
+    from pptd_project import find_manifest, read_yaml_mapping, image_sources, safe_project_path
     manifest = find_manifest(Path(manifest).resolve())
     root = manifest.parent
     _, deck = read_yaml_mapping(manifest)

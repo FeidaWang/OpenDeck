@@ -1,6 +1,6 @@
 # Capability and quality evidence
 
-Release: 1.4.0-codex.1. Updated 9 November 2026.
+Release: 1.5.0-claude.1. Updated 9 November 2026.
 
 ## Evidence levels
 
@@ -10,10 +10,8 @@ Release: 1.4.0-codex.1. Updated 9 November 2026.
 | Desktop version | User report, kept separate from observed CLI version |
 | Available local renderer | Executable discovery and a successful actual render |
 | Source geometry check | Current layout report tied to source files and measured fonts |
-| Source visual acceptance | Actual source images, page-by-page review and individual finding resolutions |
-| Final-file visual acceptance | Current PPTX hash, original final-render report, actual final images and review |
-| Font embedding | Inspection of the actual exported file and font coverage |
-| Target-app playback | Actual playback in the named application |
+| Visual acceptance | Not available in this package: it has no renderer |
+| PPTX output | Not available in this package: it has no PPTX writer |
 
 The supplied desktop build `26.1103.60933` (released 9 November 2026, user-reported) is a target environment description. It does not establish installed tools, a model API identifier, image-reading ability, fonts or a successful local test.
 
@@ -21,11 +19,11 @@ No model-specific capability matrix is needed by the current workflow. Model and
 
 ## Implementation evidence
 
-- `scripts/codex_workflow.py`: serial plan, dependency checks, source/report/image hashes and final-file review gates.
+- `scripts/codex_workflow.py`: serial plan, dependency checks and source/report hashes for the structure and layout gates.
 - `scripts/layout_engine.py`: bounded spec-to-PPTD construction using measured fonts.
 - `scripts/layout_quality.py`: source layout findings and actual font evidence.
-- `scripts/render_pptx.py`: local rendering of an existing PPTX with explicit source provenance.
+- `scripts/render_pptx.py`: optional local rendering of a PPTX you already have, outside the task chain.
+- `scripts/pptd_project.py`: reads a PPTD project and keeps every file reference inside it.
 - `scripts/asset_audit.py`: existing local file inspection only.
-- `VALIDATION.md` at the package root: tests actually executed and limitations.
 
-Model judgement, a remote editor's current compatibility and a target application's rendering remain empirical questions. Source checks are not a benchmark of model quality. A successful local conversion is not a guarantee for every application, font or animation.
+Model judgement and a target application's rendering remain empirical questions. Source checks are not a benchmark of model quality.

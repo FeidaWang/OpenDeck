@@ -6,7 +6,6 @@ import { basename, dirname, join, resolve, sep } from "node:path";
 import { spawn, spawnSync } from "node:child_process";
 import { stdin as input, stdout as output } from "node:process";
 import { fileURLToPath } from "node:url";
-import { startEditorServer } from "../lib/editor-server.js";
 
 const SKILL_NAME = "open-kimi-ppt";
 const MIN_NODE_MAJOR = 18;
@@ -53,26 +52,10 @@ Help and doctor never install a skill or change Codex configuration.
 `);
     return;
   }
-  if (command === "serve") {
-    console.log(`Start the local PPTD editor and exporter.
-
-Usage:
-  node bin/open-kimi-ppt-skill.js serve [options]
-
-Options:
-  --port <number>  HTTP port (default: 55173)
-  --open           Open the editor in the default browser
-  -h, --help       Show this help
-  -V, --version    Show version
-`);
-    return;
-  }
-
-  console.log(`Install ${SKILL_NAME} for your AI coding agent or start its local editor.
+  console.log(`Install ${SKILL_NAME} for your AI coding agent and run its local deck checks.
 
 Usage:
   node bin/open-kimi-ppt-skill.js [install] [options]
-  node bin/open-kimi-ppt-skill.js serve [options]
   node bin/open-kimi-ppt-skill.js codex <command> [arguments]
 
 Install options:
@@ -94,7 +77,6 @@ For agents / CI, prefer:
 Use these commands from the unpacked bundle to keep this Codex edition.
 Explicit install replaces an existing skill using staging and rollback.
 Codex detection uses CODEX_HOME when set, otherwise ~/.codex.
-Run "node bin/open-kimi-ppt-skill.js serve --help" for server options.
 `);
 }
 
@@ -104,7 +86,7 @@ function printVersion() {
 
 function parseArguments(arguments_) {
   const args = [...arguments_];
-  const command = ["install", "serve", "codex"].includes(args[0]) ? args.shift() : "install";
+  const command = ["install", "codex"].includes(args[0]) ? args.shift() : "install";
   if (command === "codex") {
     return {
       command,
@@ -113,9 +95,7 @@ function parseArguments(arguments_) {
       version: args.length === 1 && ["--version", "-V"].includes(args[0]),
     };
   }
-  const options = command === "serve"
-    ? { command, open: false, port: 55173 }
-    : { command, targets: [], yes: false, all: false };
+  const options = { command, targets: [], yes: false, all: false };
 
   while (args.length > 0) {
     const argument = args.shift();
@@ -144,20 +124,6 @@ function parseArguments(arguments_) {
       continue;
     }
 
-    if (command === "serve" && argument === "--port") {
-      const port = Number(args.shift());
-      if (!Number.isInteger(port) || port < 1 || port > 65_535) {
-        throw new Error("--port must be an integer between 1 and 65535");
-      }
-      options.port = port;
-      continue;
-    }
-
-    if (command === "serve" && argument === "--open") {
-      options.open = true;
-      continue;
-    }
-
     if (argument === "--help" || argument === "-h") {
       options.help = true;
       continue;
@@ -172,14 +138,6 @@ function parseArguments(arguments_) {
   }
 
   return options;
-}
-
-function openBrowser(url) {
-  const command = process.platform === "darwin" ? "open" : process.platform === "win32" ? "cmd" : "xdg-open";
-  const args = process.platform === "win32" ? ["/c", "start", "", url] : [url];
-  const child = spawn(command, args, { detached: true, stdio: "ignore" });
-  child.on("error", (error) => console.warn(`Could not open the browser: ${error.message}`));
-  child.unref();
 }
 
 function defaultSkillsDirectory() {
@@ -459,15 +417,6 @@ async function main() {
     await runCodex(options.args);
     return;
   }
-
-  const { server, url } = await startEditorServer({ port: options.port });
-  console.log(`Open Kimi PPT editor is running at ${url}`);
-  console.log("Press Ctrl+C to stop the server.");
-  if (options.open) openBrowser(url);
-
-  const shutdown = () => server.close(() => process.exit(0));
-  process.once("SIGINT", shutdown);
-  process.once("SIGTERM", shutdown);
 }
 
 main().catch((error) => {

@@ -2,5 +2,3 @@
 # PyYAML 6.0.3 and Pillow 13.0.0 were present in the validation environment.
 PyYAML>=6.0.3,<7
 Pillow>=12,<14
-# Live browser export dependency; not installed/used in the offline validation run.
-websocket-client>=1.8,<2

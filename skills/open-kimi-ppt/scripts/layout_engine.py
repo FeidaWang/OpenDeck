@@ -226,7 +226,7 @@ class Builder:
         from PIL import Image, UnidentifiedImageError
         src = local_path(self.asset_root, slide["image"])
         if src.stat().st_size > 20 * 1024 * 1024:
-            raise LayoutError("Image exceeds the exporter's 20 MiB limit; supply an appropriately sized source asset")
+            raise LayoutError("Image exceeds the 20 MiB limit; supply an appropriately sized source asset")
         try:
             with Image.open(src) as asset:
                 if asset.format not in ("PNG", "JPEG"):

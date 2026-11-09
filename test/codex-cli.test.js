@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, relative, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -35,7 +35,8 @@ test("codex forwards arguments as separate argv values without shell expansion",
       env: { ...process.env, OPEN_KIMI_PPT_PYTHON: python },
     });
     assert.equal(result.status, 0, result.stderr);
-    assert.deepEqual(JSON.parse(result.stdout), { args: [workflow, ...args], cwd: root });
+    // The child reports its canonical cwd; on macOS tmpdir() is a symlink (/var -> /private/var).
+    assert.deepEqual(JSON.parse(result.stdout), { args: [workflow, ...args], cwd: realpathSync(root) });
     assert.equal(existsSync(join(root, "marker")), false);
     assert.equal(existsSync(join(root, "another")), false);
   } finally {
@@ -75,7 +76,7 @@ test("missing Python reports an explicit error and does not install anything", (
 test("top-level and codex help work without Python and leave the home directory untouched", () => {
   const root = mkdtempSync(join(tmpdir(), "open-kimi-cli-"));
   try {
-    for (const args of [["--help"], ["install", "--help"], ["serve", "--help"], ["codex"], ["codex", "--help"]]) {
+    for (const args of [["--help"], ["install", "--help"], ["codex"], ["codex", "--help"]]) {
       const result = runCli(args, {
         cwd: root,
         env: { ...process.env, HOME: root, USERPROFILE: root, OPEN_KIMI_PPT_PYTHON: join(root, "missing-python") },

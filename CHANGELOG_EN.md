@@ -1,101 +1,25 @@
-# Codex adaptation changelog
+# Changelog
+
+This file lists changes in this derivative. The history of the upstream project is in its own repository.
+
+## 1.5.0-claude.1 — 2026-11-09
+
+### Removed
+
+- The remote rendering and PPTX export path: `export_images.py`, `export_pptx.py`, `export_host.html`, their tests, the `websocket-client` dependency, and the `--allow-remote-renderer` flag. These sent the deck to a third-party web editor in an iframe. The editor now produces PPTX on its own servers, so the path could not be repaired inside this project.
+- The local browser editor (`serve` command, `editor/`, `lib/`), which embedded the same remote editor.
+- The `render`, `visual_review`, `export` and `final_output_review` workflow tasks. The task chain now ends at `layout`.
+- Upstream release notes, validation logs and internal packaging notes.
+
+### Changed
+
+- This package no longer produces PPTX or page images. Its output is a PPTD project plus structural and measured-layout checks.
+- Project reading moved to `pptd_project.py`.
+- `status` now reports `visual_review: not_performed` and `pptx_export: not_available`; `complete` is true only when all tasks are done and no layout finding is open.
+- Fixed two tests that failed on macOS because they compared `/var/...` with `/private/var/...`.
 
 ## 1.4.0-codex.1 — 2026-11-09
 
 - Use one active host model at its unchanged reasoning setting for every task; no model catalog is required.
-- Remove the dedicated generation integration and request compiler; retain local asset inspection.
-- Add measured template construction, font and glyph checks, overflow/collision checks and stable review findings.
-- Add mandatory layout evidence and actual final-PPTX render review to workflow schema v2.
-- Preserve dependency invalidation, protected outputs, isolated downloads and explicit remote-rendering boundaries.
-- Package a clean current-source snapshot and revised single-model usage documentation.
-
-## Earlier Codex adaptation
-
-- Added persistent source workflow state and strengthened export and installation output protection.
-- Superseded planning behavior is replaced by the single-model workflow above.
-
-## Upstream history
-
-The following entries describe historical upstream releases, not current setup instructions. Use this bundle's README for the present workflow.
-
-## [1.2.0] - 2026-08-06
-
-### Added
-
-- CLI supports `-h` / `--help` and `-V` / `--version`
-
-### Changed
-
-- Renamed the npm package and CLI from `open-kimi-ppt-skills` to `open-kimi-ppt-skill` to match the GitHub repo. Use `npx open-kimi-ppt-skill@latest` going forward; the old package name will no longer receive updates
-
-## [1.1.3] - 2026-08-06
-
-### Added
-
-- Interactive `install` checklist for `.agents` / `.codex` / `.claude` / `.cursor` / `.workbuddy` skill directories (space to multi-select)
-- `-y/--yes` (non-interactive default) and repeatable `--target`
-- `--all` installs only into detected agent directories; missing agents are skipped with a notice instead of being created
-- Windows export auto-starts a persistent debug browser (Chrome, falling back to Edge) to work around agent-browser failing to launch Chrome itself; the instance stays resident and is reused across exports, and `AGENT_BROWSER_CDP` can point to a debug browser you started yourself
-
-### Fixed
-
-- Tolerate files vanishing mid-scan in `find_download` when Chrome renames `.crdownload` entries in Downloads, avoiding `FileNotFoundError` aborting export (Related to #4)
-
-### Changed
-
-- README now steers agents to `npx open-kimi-ppt-skill@latest install -y` instead of cloning the repo
-
-## [1.1.2] - 2026-08-06
-
-### Fixed
-
-- Fix Chinese-locale Windows export hang / GBK decode errors in `export_pptx.py` / `export_images.py` (capture stdout via temp file + UTF-8)
-- Work around agent-browser `--download-path` silently canceling Chrome downloads: click download and poll the default Downloads folder
-- Stop shipping `__pycache__/*.pyc` in the npm package (list script sources explicitly in `files`)
-
-## [1.1.1] - 2026-08-06
-
-### Added
-
-- Align PPTD with official element-level `animations`; Skill notes for animation / `notes` usage bounds
-- Align image priority, anti-AI copy rules, clarification asks, replicate guidance, and parallel page writes
-- Ship ~30 preset design systems, invoked only when named
-- Restore `customFonts` (Google Fonts) and poster size recommendations
-- Root theme catalogs: `theme.md` / `theme_EN.md` (with preview images)
-- Sample project `example/xiaomi-yu7-ppt-animation` (on-slide entrance animations)
-
-### Changed
-
-- Sync scenario docs with official animation guidance and `customFonts` references
-- README: document element animations, preset themes, and sample prompts
-
-## [1.0.2] - 2026-08-06
-
-### Changed
-
-- `install` overwrites an existing skill by default; `--force` is no longer required (still accepted for compatibility)
-
-## [1.0.1] - 2026-08-06
-
-### Added
-
-- Skill workflow **step0 prerequisite check**: verify Node.js 18+, npm/npx, and python3 before generation; note that a Chromium-based browser is required for export
-- Export scripts check **Node.js 18+** and **npm** at startup, with clear install guidance when missing or too old
-- CLI (`open-kimi-ppt-skill`) refuses to start when the Node.js major version is below 18
-- Auto-install **PyYAML** via `pip install --user pyyaml` when missing (same pattern as Pillow / websocket-client)
-
-### Docs
-
-- Added multi-agent / multi-model example screenshots (ChatGPT·Codex + 5.6 Luna, Reasonix + DeepSeek, WorkBuddy, and more)
-- Clarified install as “automatic or manual — pick one”, with Windows path notes
-- Updated README structure and example images
-
-## [1.0.0] - 2026-08-05
-
-### Added
-
-- Initial release of `open-kimi-ppt-skill`
-- PPTD create / edit / replicate, delivering both an editable PPTD project and a PPTX by default
-- Browser-side PPTX export (embedded fonts, fade transitions) with optional multimodal visual QA before export
-- Local in-browser PPTD editor (`npx open-kimi-ppt-skill serve`)
-- CLI to install the skill into `~/.agents/skills` (or another agent directory via `--target`)
+- Remove the dedicated image-generation integration; keep local asset inspection.
+- Add measured template construction, font and glyph checks, overflow and collision checks, and stable review findings.

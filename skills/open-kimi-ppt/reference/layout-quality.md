@@ -2,7 +2,7 @@
 
 This path makes geometry, typography, source checks and review gates independent of the selected model and reasoning effort. The current model supplies a concise, factual content specification. Local code selects a bounded template, measures the actual local font files, preserves the specified page count and emits editable PPTD objects. It does not select another model, change effort, call an image model or install dependencies.
 
-A source-layout pass means the supported source checks passed. It does **not** certify Kimi's renderer, the exported PowerPoint file, another machine's fonts, application playback or editorial quality. Render every page, inspect the actual exported file and follow the workflow's separate visual and final-output review gates.
+A source-layout pass means the supported source checks passed. It does **not** certify how any application will draw the deck, another machine's fonts, application playback or editorial quality. This package cannot render the deck, so visual review stays with a person.
 
 ## Build a deck
 
@@ -123,4 +123,4 @@ The report has `schema_version: 1`, `kind: deterministic_source_layout`, `slide_
 - `metrics`: measured line counts and text extents for inspected text boxes.
 - `visual_review` and `target_application_review`: both `not_performed`.
 
-The workflow reruns the checker before accepting evidence. A hard error cannot be waived by a visual-review note. A current `needs_review` report can proceed to rendering, but visual QA must resolve **every** review issue by stable ID, current report hash and the corresponding page's image evidence. Changing the source, effective policy or font bytes requires fresh checks and affected renders. Final exported-file inspection remains a separate gate even after source checks and source-page review pass.
+The workflow reruns the checker before accepting evidence. A hard error cannot be waived. A `needs_review` report can be recorded, but its findings stay listed as unresolved and keep the workflow incomplete until the source changes so they no longer appear. Changing the source, effective policy or font bytes requires fresh checks.

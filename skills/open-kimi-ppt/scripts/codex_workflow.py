@@ -30,16 +30,12 @@ PROFILE_PATH = SKILL_ROOT / "config/codex-profiles.json"
 MAX_JSON_BYTES = 4 * 1024 * 1024
 EVIDENCE = "https://learn.chatgpt.com/docs/app-server"
 WORKFLOW_SCHEMA_VERSION = 2
-TASK_IDS = ("story", "design", "assets", "pages", "integrate", "structure", "layout",
-            "render", "visual_review", "export", "final_output_review")
+TASK_IDS = ("story", "design", "assets", "pages", "integrate", "structure", "layout")
 TASK_OUTPUTS = {
     "story": ["run/storyboard.json", "run/sources.json"],
     "design": ["run/design-tokens.json", "run/layout-policy.json"],
     "assets": ["run/assets.json"], "integrate": ["deck.pptd"],
     "structure": ["run/structural-qa.json"], "layout": ["run/layout-qa.json"],
-    "render": ["run/render-qa.json"], "visual_review": ["run/visual-qa.json"],
-    "export": ["deck.pptx", "run/export-qa.json"],
-    "final_output_review": ["run/final-output-qa.json"],
 }
 
 
@@ -103,7 +99,7 @@ def checker_fingerprints() -> dict[str, str]:
     """A changed acceptance rule requires new evidence, even for unchanged sources."""
     scripts = Path(__file__).resolve().parent
     return {name: digest(scripts / name) for name in
-            ("codex_workflow.py", "layout_quality.py", "asset_audit.py", "export_pptx.py")}
+            ("codex_workflow.py", "layout_quality.py", "asset_audit.py", "pptd_project.py")}
 
 
 def version(command: str) -> dict:
@@ -180,7 +176,7 @@ def probe_models(executable: str, timeout: float = 20) -> list[dict]:
 
     try:
         send({"id": 0, "method": "initialize", "params": {
-            "clientInfo": {"name": "open_kimi_ppt_doctor", "title": "Open Kimi PPT doctor", "version": "1.4.0"}}})
+            "clientInfo": {"name": "open_kimi_ppt_doctor", "title": "Open Kimi PPT doctor", "version": "1.5.0"}}})
         receive(0)
         send({"method": "initialized"})
         models, cursor = [], None
@@ -275,17 +271,14 @@ def doctor(args) -> dict:
     report = {
         "schema_version": WORKFLOW_SCHEMA_VERSION, "observed_at": now(),
         "target_desktop": policy["target_desktop"], **session_metadata(supplied),
-        "tools": {name: version(name) for name in ("node", "npm", "codex", "agent-browser", "soffice")},
+        "tools": {name: version(name) for name in ("node", "npm", "codex", "soffice")},
         "python": {"version": sys.version.split()[0], "modules": {
-            module: importlib.util.find_spec(module) is not None for module in ("yaml", "PIL", "websocket", "fitz")}},
+            module: importlib.util.find_spec(module) is not None for module in ("yaml", "PIL", "fitz")}},
         "models": normalise_models(supplied.get("models", [])),
         "model_catalog_evidence": "supplied_snapshot" if supplied.get("models") else "unobserved",
         "model_catalog_required": False,
         "execution": {"mode": "single_model", "max_parallel_workers": 1,
                       "switches_models": False, "changes_reasoning_effort": False, "spawns_agents": False},
-        "renderer": {"engine": "kimi-browser", "live_verified": False,
-                     "requires_remote_permission": True,
-                     "origins": ["https://www.kimi.com", "https://statics.moonshot.cn"]},
         "warnings": [], "source": EVIDENCE,
     }
     if args.model_catalog:
@@ -335,23 +328,15 @@ def make_plan(brief: dict, capabilities: dict | None = None) -> dict:
     task("structure", "builder", ["run/structural-qa.json"],
          "Run codex_workflow.py validate and fix every structural failure. Structural checks are distinct from appearance and playback.")
     task("layout", "builder", ["run/layout-qa.json"],
-         "Run layout_quality.py audit/check on the current deck and policy. Fix all hard geometry, font, text-fit and contrast failures. A needs_review result may proceed to rendering only with every review finding retained for individual visual resolution.")
-    task("render", "builder", ["run/render-qa.json"],
-         "Render every source page with an available permitted renderer. Record render_source=source_pptd and actual ordered image paths/hashes. Missing rendering capability blocks the task; model or effort changes are not prerequisites.")
-    task("visual_review", "reviewer", ["run/visual-qa.json"],
-         "In a separate review pass in this same host, inspect the contact sheet and every page at readable size. Check typography, overlap, spacing, images, charts and source labels. Reference the current layout report hash and resolve every review issue individually with page image evidence. Fix defects and rerun dependent gates; unresolved failures block export at every reasoning effort.")
-    task("export", "builder", ["deck.pptx", "run/export-qa.json"],
-         "Export through the permitted backend and verify the actual PPTX, exact slide count and transitions. Export completion is not final visual approval.")
-    task("final_output_review", "reviewer", ["run/final-output-qa.json"],
-         "Render the exported deck.pptx in an actual presentation renderer, then inspect every final page. Bind source_pptx, renderer and original final-render report to fresh image hashes. Record operator-attested page passes. Keep application playback separate; source preview images cannot substitute for final PPTX rendering. Do not claim completion while any required evidence or defect remains unresolved.")
+         "Run layout_quality.py audit/check on the current deck and policy. Fix all hard geometry, font, text-fit and contrast failures. A needs_review result may be recorded only with every review finding retained; this project cannot render the deck, so those findings stay open for a person to judge.")
     return {"schema_version": WORKFLOW_SCHEMA_VERSION, "created_at": now(), "slide_count": count,
             **metadata, "execution": "single_model", "executes_models": False,
             "switches_models": False, "changes_reasoning_effort": False, "spawns_agents": False,
-            "max_parallel_workers": 1, "max_renderer_jobs": 1,
+            "max_parallel_workers": 1,
             "quality_policy": policy["quality_policy"], "tasks": tasks,
             "boundaries": ["Director, builder and reviewer are sequential passes of the current host, not model assignments.",
                            "Unknown, absent or future model/effort metadata does not change the mandatory gates.",
-                           "Unavailable rendering or visual inspection must be reported as blocked; no gate can be skipped.",
+                           "This project cannot render a deck: visual review and PPTX export are not performed and must be reported as not performed.",
                            "Permissions and approvals remain controlled by the host."]}
 
 def initialise(project: Path, brief: dict, capabilities: dict, plan: dict) -> dict:
@@ -473,139 +458,11 @@ def verify_layout(project: Path, qa: dict, count: int, files: dict[str, str]) ->
     require_current_evidence(files, fresh["files"], "Layout QA")
     issues = fresh["issues"]
     if any(issue.get("severity") != "review" for issue in issues):
-        raise WorkflowError("Only explicit review findings may proceed to visual inspection")
+        raise WorkflowError("Only explicit review findings may be recorded; hard failures must be fixed")
     return {"kind": "deterministic_layout_audit", "status": fresh["status"], "slide_count": count,
             "unresolved_layout_issues": [issue["id"] for issue in issues], "fonts": fresh["fonts"],
             "checker_sha256": checker_fingerprints(),
             "visual_review": "not_performed", "playback_review": "not_performed"}
-
-
-def verify_page_images(project: Path, qa: dict, count: int, files: dict[str, str], *, inspect: bool) -> list[dict]:
-    from asset_audit import audit_asset
-    import yaml
-    deck = yaml.safe_load(contained(project, "deck.pptd", exists=True).read_text(encoding="utf-8"))
-    width, height = deck.get("size", [960, 540])
-    pages = qa.get("pages")
-    if not isinstance(pages, list) or len(pages) != count:
-        raise WorkflowError("Rendered/visual QA needs actual image files and complete ordered page coverage")
-    paths, canonical_paths = set(), set()
-    for number, page in enumerate(pages, start=1):
-        require_object(page, "QA page")
-        if type(page.get("page")) is not int or page["page"] != number:
-            raise WorkflowError("QA pages must list every page once in source order, starting at 1")
-        rel = page.get("path")
-        if not isinstance(rel, str) or rel not in files or rel in paths:
-            raise WorkflowError("Every QA page needs a distinct image path present in files with its current hash")
-        canonical = contained(project, rel, exists=True)
-        if canonical in canonical_paths:
-            raise WorkflowError("QA images must refer to distinct files, not duplicate paths or symlinks")
-        paths.add(rel)
-        canonical_paths.add(canonical)
-        image = audit_asset(rel, project)
-        if image["format"] not in ("png", "jpeg", "webp") or image["frames"] != 1:
-            raise WorkflowError("Page QA evidence must be a static PNG, JPEG or WebP render")
-        if image["width"] < width or image["height"] < height:
-            raise WorkflowError("Page QA evidence must have at least the source canvas resolution for readable inspection")
-        if abs(image["width"] / image["height"] - width / height) > 0.03:
-            raise WorkflowError("Page QA image aspect ratio must match the source canvas")
-        if "sha256" in page and page["sha256"] != files[rel]:
-            raise WorkflowError("QA page hash disagrees with its evidence file")
-        if inspect and page.get("status") != "passed":
-            raise WorkflowError("Each visual QA page must explicitly pass operator inspection")
-    if inspect and qa.get("review_method") != "operator_attested":
-        raise WorkflowError("Visual QA must declare review_method=operator_attested; byte checks do not assess appearance")
-    if inspect and qa.get("visual_review", "operator_attested") != "operator_attested":
-        raise WorkflowError("A visual QA report must not retain a not_performed visual_review claim")
-    return pages
-
-
-def verify_layout_resolutions(project: Path, qa: dict, files: dict[str, str], pages: list[dict]) -> list[str]:
-    review = require_object(qa.get("layout_review"), "Visual QA layout_review")
-    if review.get("report_path") != "run/layout-qa.json":
-        raise WorkflowError("Visual QA must reference run/layout-qa.json")
-    report_path = contained(project, review["report_path"], exists=True)
-    current_hash = digest(report_path)
-    if review.get("sha256") != current_hash or files.get(review["report_path"]) != current_hash:
-        raise WorkflowError("Visual QA must contain the latest layout report hash in layout_review and files")
-    layout = require_object(read_json(report_path), "Layout QA")
-    if layout.get("status") not in ("passed", "needs_review"):
-        raise WorkflowError("Failed layout findings cannot be overridden by visual review")
-    issues = layout.get("issues")
-    if not isinstance(issues, list) or any(not isinstance(item, dict) or item.get("severity") != "review" for item in issues):
-        raise WorkflowError("Layout review must retain all review findings and no hard failures")
-    expected = {item["id"]: item for item in issues}
-    if len(expected) != len(issues):
-        raise WorkflowError("Layout issue identifiers must be unique")
-    resolutions = review.get("resolutions")
-    if not isinstance(resolutions, list):
-        raise WorkflowError("Visual QA needs an explicit resolutions array, including when no layout findings remain")
-    resolved = set()
-    page_paths = {page["page"]: page["path"] for page in pages}
-    for resolution in resolutions:
-        require_object(resolution, "Layout resolution")
-        issue_id = resolution.get("issue_id")
-        if not isinstance(issue_id, str) or issue_id not in expected or issue_id in resolved:
-            raise WorkflowError("Each layout resolution must identify one distinct current review issue")
-        issue = expected[issue_id]
-        number = resolution.get("page")
-        if type(number) is not int or number != issue.get("page"):
-            raise WorkflowError("Each layout resolution must reference its affected page and actual reviewed image")
-        if number == 0:
-            expected_pages = [{"page": p, "path": path} for p, path in page_paths.items()]
-            if resolution.get("pages") != expected_pages:
-                raise WorkflowError("A deck-wide layout resolution must reference every actual reviewed page image")
-        elif number not in page_paths or resolution.get("path") != page_paths[number]:
-            raise WorkflowError("Each layout resolution must reference its affected page and actual reviewed image")
-        if resolution.get("status") != "resolved" or not isinstance(resolution.get("explanation"), str) or not resolution["explanation"].strip():
-            raise WorkflowError("Each layout finding needs an individual resolved status and concrete inspection explanation")
-        resolved.add(issue_id)
-    if resolved != set(expected):
-        missing = sorted(set(expected) - resolved)
-        raise WorkflowError("Unresolved layout issues: " + ", ".join(missing))
-    return sorted(resolved)
-
-
-def verify_final_review(project: Path, qa: dict, plan: dict, files: dict[str, str], pages: list[dict]) -> dict:
-    if qa.get("render_source") != "final_pptx":
-        raise WorkflowError("Final output review requires render_source=final_pptx")
-    source = require_object(qa.get("source_pptx"), "Final source_pptx")
-    pptx_sha = digest(contained(project, "deck.pptx", exists=True))
-    if source.get("path") != "deck.pptx" or source.get("sha256") != pptx_sha or files.get("deck.pptx") != pptx_sha:
-        raise WorkflowError("Final output review must be bound to the current exported deck.pptx hash")
-    renderer = require_object(qa.get("renderer"), "Final renderer")
-    if not isinstance(renderer.get("name"), str) or not renderer["name"].strip():
-        raise WorkflowError("Final output review must name the actual PPTX renderer")
-    ref = require_object(qa.get("render_report"), "Final render_report")
-    rel = ref.get("path")
-    if rel in ("run/render-qa.json", "run/visual-qa.json", "run/final-output-qa.json"):
-        raise WorkflowError("Final review needs a distinct original PPTX render report")
-    original_path = contained(project, rel, exists=True)
-    if ref.get("sha256") != digest(original_path) or files.get(rel) != ref["sha256"]:
-        raise WorkflowError("Final output review must include the original render report hash")
-    original = require_object(read_json(original_path), "Original final render report")
-    if original.get("status") != "passed" or original.get("kind") != "final_pptx_render" or original.get("render_source") != "final_pptx" or original.get("source_pptx") != source or original.get("renderer") != renderer or original.get("slide_count") != plan["slide_count"]:
-        raise WorkflowError("Original render report must prove current PPTX provenance and match renderer, source hash and slide count")
-    original_files = evidence_files(project, original.get("files", []), "Final render")
-    require_current_evidence(files, original.get("files", []), "Final output review")
-    if original_files.get("deck.pptx") != pptx_sha:
-        raise WorkflowError("Original render report is not bound to the current PPTX")
-    original_pages = verify_page_images(project, original, plan["slide_count"], original_files, inspect=False)
-    if [item["path"] for item in original_pages] != [item["path"] for item in pages]:
-        raise WorkflowError("Final review must inspect the actual final renderer's ordered page images")
-    source_render = require_object(read_json(contained(project, "run/render-qa.json", exists=True)), "Source render QA")
-    source_paths = {contained(project, item["path"], exists=True) for item in source_render["pages"]}
-    if any(contained(project, item["path"], exists=True) in source_paths for item in pages):
-        raise WorkflowError("Source-render image paths cannot be reused as final PPTX render evidence")
-    playback = qa.get("playback_review", "not_performed")
-    if playback != "not_performed":
-        require_object(playback, "Application playback attestation")
-        if playback.get("status") != "passed" or playback.get("review_method") != "operator_attested" or playback.get("source_pptx_sha256") != pptx_sha or not isinstance(playback.get("application"), str) or not playback["application"].strip() or not isinstance(playback.get("notes"), str) or not playback["notes"].strip():
-            raise WorkflowError("Playback passes require a separate current-PPTX operator attestation naming the application and inspected behavior")
-    return {"kind": "operator_attested_final_pptx_review", "slide_count": plan["slide_count"],
-            "render_source": "final_pptx", "source_pptx": source, "renderer": renderer,
-            "render_report": ref, "visual_judgement": "operator_attested",
-            "provenance": "renderer_report_and_hashes_checked; rendering origin is operator_attested",
-            "unresolved_layout_issues": [], "playback_review": playback}
 
 
 def verify_task_qa(project: Path, task_id: str, qa: dict, plan: dict,
@@ -622,40 +479,6 @@ def verify_task_qa(project: Path, task_id: str, qa: dict, plan: dict,
                 "visual_review": "not_performed", "playback_review": "not_performed"}
     if task_id == "layout":
         return verify_layout(project, qa, count, files)
-    if task_id in ("render", "visual_review", "final_output_review"):
-        pages = verify_page_images(project, qa, count, files, inspect=task_id != "render")
-        if task_id == "final_output_review":
-            return verify_final_review(project, qa, plan, files, pages)
-        if qa.get("render_source") != "source_pptd":
-            raise WorkflowError("Source render and visual QA must declare render_source=source_pptd")
-        if task_id == "visual_review":
-            rendered = require_object(read_json(contained(project, "run/render-qa.json", exists=True)), "Source render QA")
-            rendered_files = evidence_files(project, rendered.get("files", []), "Source render")
-            if [item["path"] for item in rendered["pages"]] != [item["path"] for item in pages]:
-                raise WorkflowError("Source visual review must inspect the source renderer's actual ordered page images")
-            require_current_evidence(files, [{"path": item["path"], "sha256": rendered_files[item["path"]]} for item in pages], "Source visual review")
-            resolved = verify_layout_resolutions(project, qa, files, pages)
-            return {"kind": "operator_attested_visual_review", "slide_count": count,
-                    "render_source": "source_pptd", "resolved_layout_issues": resolved,
-                    "unresolved_layout_issues": [], "playback_review": "not_performed"}
-        return {"kind": "rendered_image_structure", "slide_count": count,
-                "render_source": "source_pptd", "visual_review": "not_performed", "playback_review": "not_performed"}
-    if task_id == "export":
-        from export_pptx import ExportError, verify_output
-        pptx = contained(project, "deck.pptx", exists=True)
-        if files.get("deck.pptx") != digest(pptx):
-            raise WorkflowError("Export QA must include the current deck.pptx hash")
-        transition = qa.get("transition", "fade")
-        if transition not in ("fade", "none"):
-            raise WorkflowError("Export QA transition must be fade or none")
-        try:
-            stats = verify_output(pptx, transition, expect_fonts=False, expected_slides=count)
-        except ExportError as exc:
-            raise WorkflowError(f"Fresh PPTX verification failed: {exc}") from exc
-        if "font_parts" in qa and qa["font_parts"] != stats["fontParts"]:
-            raise WorkflowError("Export QA font_parts disagrees with the actual PPTX")
-        return {"kind": "pptx_structure", **stats, "transition": transition,
-                "visual_review": "final_output_review_pending", "playback_review": "not_performed"}
     raise WorkflowError("No QA verifier is defined for this task")
 
 def record(project: Path, task_id: str, status: str, note: str = "", evidence: list[str] | None = None) -> dict:
@@ -720,18 +543,12 @@ def status_report(project: Path) -> dict:
     ready = [t["id"] for t in plan["tasks"] if state["tasks"][t["id"]]["status"] in ("pending", "stale")
              and all(state["tasks"][d]["status"] == "done" for d in t["depends_on"])]
     layout = state["tasks"]["layout"]
-    visual = state["tasks"]["visual_review"]
-    final = state["tasks"]["final_output_review"]
-    unresolved = layout.get("verification", {}).get("unresolved_layout_issues", [])
-    if visual["status"] == "done":
-        unresolved = visual.get("verification", {}).get("unresolved_layout_issues", unresolved)
+    unresolved = layout.get("verification", {}).get("unresolved_layout_issues", []) if layout["status"] == "done" else []
     return {"revision": state["revision"], "tasks": state["tasks"], "ready": ready,
             "execution": "single_model", "max_parallel_workers": 1,
             "layout_audit_status": layout.get("verification", {}).get("status", "not_run") if layout["status"] == "done" else layout["status"],
             "unresolved_layout_issues": unresolved,
-            "layout_issue_resolution": "operator_attested" if visual["status"] == "done" else "pending",
-            "final_pptx_review_status": "operator_attested" if final["status"] == "done" else final["status"],
-            "playback_review": final.get("verification", {}).get("playback_review", "not_performed") if final["status"] == "done" else "not_performed",
+            "visual_review": "not_performed", "pptx_export": "not_available",
             "complete": not unresolved and all(t["status"] == "done" for t in state["tasks"].values())}
 
 
@@ -740,11 +557,11 @@ def validate_deck(manifest: Path) -> dict:
         import yaml
     except ImportError:
         raise WorkflowError("Structural validation requires PyYAML; install the declared requirements explicitly")
-    from export_pptx import ExportError, build_payload, find_manifest
+    from pptd_project import ProjectError, find_manifest, load_project
     try:
         manifest = find_manifest(manifest.resolve())
-        payload = build_payload(manifest)  # Parser also enforces resource containment.
-    except ExportError as exc:
+        project_files = load_project(manifest)  # Parser also enforces resource containment.
+    except ProjectError as exc:
         raise WorkflowError(str(exc)) from exc
     root = manifest.parent
     deck = yaml.safe_load(manifest.read_text(encoding="utf-8"))
@@ -757,7 +574,7 @@ def validate_deck(manifest: Path) -> dict:
     errors, warnings = [], []
     files = [{"path": manifest.name, "sha256": digest(manifest)}]
     files.extend({"path": rel, "sha256": digest(contained(root, rel, exists=True))}
-                 for rel in sorted(payload["imageMap"]))
+                 for rel in sorted(project_files["images"]))
     for rel in pages:
         page_path = contained(root, rel, exists=True)
         files.append({"path": rel, "sha256": digest(page_path)})

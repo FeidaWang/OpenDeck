@@ -10,7 +10,6 @@ import tempfile
 import threading
 import time
 import unittest
-import zipfile
 from unittest.mock import patch
 
 from PIL import Image
@@ -80,8 +79,9 @@ class SingleModelTests(unittest.TestCase):
         self.assertEqual(tuple(t["id"] for t in tasks), workflow.TASK_IDS)
         for index, task in enumerate(tasks):
             self.assertEqual(task["depends_on"], [tasks[index - 1]["id"]] if index else [])
-        self.assertLess(workflow.TASK_IDS.index("layout"), workflow.TASK_IDS.index("render"))
-        self.assertLess(workflow.TASK_IDS.index("export"), workflow.TASK_IDS.index("final_output_review"))
+        self.assertEqual(workflow.TASK_IDS[-1], "layout")
+        for gone in ("render", "visual_review", "export", "final_output_review"):
+            self.assertNotIn(gone, workflow.TASK_IDS)
 
     def test_cli_plan_and_init_need_only_a_brief(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -142,16 +142,8 @@ class StateTests(unittest.TestCase):
             elif name == "layout":
                 from layout_quality import audit_deck
                 workflow.atomic_json(path, audit_deck(self.project / "deck.pptd"))
-            elif name in ("render", "visual_review"):
-                workflow.atomic_json(path, self.image_qa(visual=name == "visual_review"))
-            elif name == "final_output_review":
-                workflow.atomic_json(path, self.final_qa())
             elif rel == "run/layout-policy.json":
                 workflow.atomic_json(path, {"schema_version": 1, "safe_margin": 24})
-            elif rel == "deck.pptx":
-                self.make_pptx(path)
-            elif rel == "run/export-qa.json":
-                workflow.atomic_json(path, self.export_qa())
             elif path.suffix == ".json":
                 workflow.atomic_json(path, {"content": "test evidence", "files": []})
             elif path.suffix == ".page":
@@ -166,64 +158,6 @@ class StateTests(unittest.TestCase):
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text("test output", encoding="utf-8")
         return workflow.record(self.project, name, "done")
-
-    def image_qa(self, visual=False, final=False):
-        pages, files = [], []
-        for i in range(1, BRIEF["slide_count"] + 1):
-            rel = f"run/{'final-renders' if final else 'renders'}/{i:02d}.png"
-            image = self.project / rel
-            image.parent.mkdir(exist_ok=True)
-            Image.new("RGB", (960, 540), (i * 20, 80, 100)).save(image)
-            pages.append({"page": i, "path": rel, **({"status": "passed"} if visual else {})})
-            files.append({"path": rel, "sha256": workflow.digest(image)})
-        result = {"status": "passed", "slide_count": BRIEF["slide_count"], "pages": pages, "files": files,
-                  "render_source": "final_pptx" if final else "source_pptd",
-                  **({"review_method": "operator_attested"} if visual else {})}
-        if visual and not final:
-            layout_path = "run/layout-qa.json"
-            layout = workflow.read_json(self.project / layout_path)
-            layout_sha = workflow.digest(self.project / layout_path)
-            result["files"].append({"path": layout_path, "sha256": layout_sha})
-            result["layout_review"] = {"report_path": layout_path, "sha256": layout_sha, "resolutions": [
-                {"issue_id": issue["id"], "page": issue["page"], "path": pages[issue["page"] - 1]["path"],
-                 "status": "resolved", "explanation": "Inspected the specific effect and confirmed readable, unclipped content."}
-                for issue in layout["issues"] if issue["severity"] == "review"]}
-        return result
-
-    def final_qa(self):
-        original = self.image_qa(final=True)
-        original["kind"] = "final_pptx_render"
-        original["source_pptx"] = {"path": "deck.pptx", "sha256": workflow.digest(self.project / "deck.pptx")}
-        original["renderer"] = {"name": "Fixture presentation renderer", "version": "test-only"}
-        original["files"].append(original["source_pptx"])
-        original["visual_review"] = "not_performed"
-        rel = "run/final-render-qa.json"
-        workflow.atomic_json(self.project / rel, original)
-        qa = copy.deepcopy(original)
-        qa["render_report"] = {"path": rel, "sha256": workflow.digest(self.project / rel)}
-        qa["files"].append(qa["render_report"])
-        qa["review_method"] = "operator_attested"
-        qa["visual_review"] = "operator_attested"
-        for page in qa["pages"]:
-            page["status"] = "passed"
-        return qa
-
-    def make_pptx(self, path, count=None):
-        import export_pptx
-        count = BRIEF["slide_count"] if count is None else count
-        with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as archive:
-            archive.writestr("[Content_Types].xml",
-                             '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
-                             '<Override PartName="/ppt/presentation.xml" '
-                             f'ContentType="{export_pptx.PPTX_CONTENT_TYPE}"/></Types>')
-            archive.writestr("ppt/presentation.xml", '<p:presentation xmlns:p="urn:test"/>')
-            for i in range(1, count + 1):
-                archive.writestr(f"ppt/slides/slide{i}.xml", '<p:sld xmlns:p="urn:test"><p:cSld/>'
-                                 '<p:transition><p:fade/></p:transition></p:sld>')
-
-    def export_qa(self):
-        return {"status": "passed", "slide_count": BRIEF["slide_count"], "transition": "fade",
-                "font_parts": 0, "files": [{"path": "deck.pptx", "sha256": workflow.digest(self.project / "deck.pptx")}]}
 
     def complete_through(self, target):
         for task in self.plan["tasks"]:
@@ -288,21 +222,6 @@ class StateTests(unittest.TestCase):
         with self.assertRaises(workflow.WorkflowError):
             workflow.contained(self.project, "media/link", exists=True)
 
-    def test_qa_requires_real_images_and_hashes(self):
-        for name in ("story", "design", "assets", "pages", "integrate"):
-            self.complete(name)
-        self.complete("structure")
-        self.complete("layout")
-        workflow.atomic_json(self.project / "run/render-qa.json", {"status": "passed", "slide_count": 5, "files": []})
-        with self.assertRaisesRegex(workflow.WorkflowError, "actual image"):
-            workflow.record(self.project, "render", "done")
-        image = self.project / "media/render.png"
-        image.write_bytes(b"test fixture bytes")
-        workflow.atomic_json(self.project / "run/render-qa.json", {"status": "passed", "slide_count": 5, "files": [
-            {"path": "media/render.png", "sha256": "bad hash"}]})
-        with self.assertRaisesRegex(workflow.WorkflowError, "changed"):
-            workflow.record(self.project, "render", "done")
-
     def test_structure_cannot_pass_an_invalid_deck_with_a_claimed_pass(self):
         self.complete_through("pages")
         (self.project / "deck.pptd").write_text("not a real deck")
@@ -328,59 +247,13 @@ class StateTests(unittest.TestCase):
         with self.assertRaisesRegex(workflow.WorkflowError, "fresh hashes"):
             workflow.record(self.project, "structure", "done")
 
-    def test_hash_matching_text_named_png_does_not_count_as_rendered_evidence(self):
-        self.complete_through("layout")
-        qa = self.image_qa()
-        image = self.project / qa["files"][0]["path"]
-        image.write_bytes(b"not an image")
-        qa["files"][0]["sha256"] = workflow.digest(image)
-        workflow.atomic_json(self.project / "run/render-qa.json", qa)
-        with self.assertRaisesRegex(ValueError, "raster"):
-            workflow.record(self.project, "render", "done")
-
-    def test_render_requires_complete_ordered_page_coverage(self):
-        self.complete_through("layout")
-        qa = self.image_qa()
-        qa["pages"][1]["page"] = 1
-        workflow.atomic_json(self.project / "run/render-qa.json", qa)
-        with self.assertRaisesRegex(workflow.WorkflowError, "source order"):
-            workflow.record(self.project, "render", "done")
-
-    def test_visual_quality_is_an_explicit_operator_attestation(self):
-        self.complete_through("render")
-        qa = self.image_qa(visual=True)
-        del qa["review_method"]
-        workflow.atomic_json(self.project / "run/visual-qa.json", qa)
-        with self.assertRaisesRegex(workflow.WorkflowError, "operator_attested"):
-            workflow.record(self.project, "visual_review", "done")
-        qa["review_method"] = "operator_attested"
-        qa["pages"][0]["status"] = "pending"
-        workflow.atomic_json(self.project / "run/visual-qa.json", qa)
-        with self.assertRaisesRegex(workflow.WorkflowError, "Each visual"):
-            workflow.record(self.project, "visual_review", "done")
-
-    def test_export_cannot_complete_using_non_pptx_bytes_or_the_wrong_count(self):
-        self.complete_through("visual_review")
-        pptx = self.project / "deck.pptx"
-        pptx.write_text("not a real deck")
-        workflow.atomic_json(self.project / "run/export-qa.json", self.export_qa())
-        with self.assertRaisesRegex(workflow.WorkflowError, "Fresh PPTX"):
-            workflow.record(self.project, "export", "done")
-        self.make_pptx(pptx, count=1)
-        workflow.atomic_json(self.project / "run/export-qa.json", self.export_qa())
-        with self.assertRaisesRegex(workflow.WorkflowError, "source has 5"):
-            workflow.record(self.project, "export", "done")
-        self.assertFalse(workflow.status_report(self.project)["complete"])
-
     def test_completed_workflow_keeps_structural_checks_and_judgement_separate(self):
-        self.complete_through("export")
-        self.assertFalse(workflow.status_report(self.project)["complete"])
-        self.complete("final_output_review")
+        self.complete_through("layout")
         report = workflow.status_report(self.project)
         self.assertTrue(report["complete"])
-        self.assertEqual(report["tasks"]["visual_review"]["verification"]["kind"], "operator_attested_visual_review")
-        self.assertEqual(report["tasks"]["export"]["verification"]["slides"], 5)
-        self.assertEqual(report["tasks"]["export"]["verification"]["playback_review"], "not_performed")
+        self.assertEqual(report["tasks"]["layout"]["verification"]["kind"], "deterministic_layout_audit")
+        self.assertEqual(report["visual_review"], "not_performed")
+        self.assertEqual(report["pptx_export"], "not_available")
 
     def test_actual_referenced_media_are_hashed_even_if_registry_omits_them(self):
         self.complete_through("pages")
@@ -432,7 +305,7 @@ class StateTests(unittest.TestCase):
                     workflow.status_report(self.project)
         workflow.atomic_json(self.project / "run/plan.json", self.plan)
 
-    def test_hard_layout_failures_block_low_effort_export_even_with_claimed_pass(self):
+    def test_hard_layout_failures_block_completion_even_with_claimed_pass(self):
         from layout_quality import audit_deck
         self.assertEqual(self.plan["current_effort"], "none")
         self.complete_through("pages")
@@ -447,9 +320,6 @@ class StateTests(unittest.TestCase):
         workflow.atomic_json(self.project / "run/layout-qa.json", qa)
         with self.assertRaisesRegex(workflow.WorkflowError, "hard failures"):
             workflow.record(self.project, "layout", "done")
-        for task in ("render", "visual_review", "export", "final_output_review"):
-            with self.subTest(task=task), self.assertRaisesRegex(workflow.WorkflowError, "dependencies"):
-                workflow.record(self.project, task, "done")
         self.assertFalse(workflow.status_report(self.project)["complete"])
 
     def prepare_review_finding(self):
@@ -475,58 +345,28 @@ class StateTests(unittest.TestCase):
         result = workflow.record(self.project, "layout", "done")
         self.assertEqual(result["verification"]["status"], "needs_review")
         status = workflow.status_report(self.project)
-        self.assertEqual(status["ready"], ["render"])
+        self.assertEqual(status["ready"], [])
+        self.assertEqual(status["visual_review"], "not_performed")
         self.assertEqual(status["unresolved_layout_issues"], [original["issues"][0]["id"]])
         self.assertFalse(status["complete"])
 
-    def test_visual_review_requires_each_current_issue_resolved_with_page_evidence(self):
-        self.prepare_review_finding()
-        self.complete("layout")
-        self.complete("render")
-        good = self.image_qa(visual=True)
-        for mode in ("unresolved", "stale_hash", "wrong_page", "wrong_issue", "no_explanation"):
-            qa = copy.deepcopy(good)
-            review = qa["layout_review"]
-            if mode == "unresolved":
-                review["resolutions"] = []
-            elif mode == "stale_hash":
-                review["sha256"] = "0" * 64
-            elif mode == "wrong_page":
-                review["resolutions"][0]["page"] = 2
-            elif mode == "wrong_issue":
-                review["resolutions"][0]["issue_id"] = "not-a-current-issue"
-            else:
-                review["resolutions"][0]["explanation"] = ""
-            workflow.atomic_json(self.project / "run/visual-qa.json", qa)
-            with self.subTest(mode=mode), self.assertRaises(workflow.WorkflowError):
-                workflow.record(self.project, "visual_review", "done")
-        workflow.atomic_json(self.project / "run/visual-qa.json", good)
-        workflow.record(self.project, "visual_review", "done")
-        report = workflow.status_report(self.project)
-        self.assertEqual(report["unresolved_layout_issues"], [])
-        self.assertEqual(report["layout_audit_status"], "needs_review")
-        self.assertEqual(report["layout_issue_resolution"], "operator_attested")
-        self.assertEqual(report["ready"], ["export"])
-
-    def test_layout_report_changes_invalidate_visual_and_final_reviews(self):
-        self.complete_through("final_output_review")
+    def test_layout_report_changes_invalidate_the_layout_task(self):
+        self.complete_through("layout")
         path = self.project / "run/layout-qa.json"
         qa = workflow.read_json(path)
         qa["checked_at"] = "changed after review"
         workflow.atomic_json(path, qa)
         status = workflow.status_report(self.project)
-        for task in ("layout", "render", "visual_review", "export", "final_output_review"):
-            self.assertEqual(status["tasks"][task]["status"], "stale")
+        self.assertEqual(status["tasks"]["layout"]["status"], "stale")
         self.assertFalse(status["complete"])
 
     def test_changed_checker_rules_invalidate_unchanged_source_evidence(self):
-        self.complete_through("final_output_review")
+        self.complete_through("layout")
         changed = workflow.checker_fingerprints()
         changed["layout_quality.py"] = "0" * 64
         with patch.object(workflow, "checker_fingerprints", return_value=changed):
             status = workflow.status_report(self.project)
-        for task in ("layout", "render", "visual_review", "export", "final_output_review"):
-            self.assertEqual(status["tasks"][task]["status"], "stale")
+        self.assertEqual(status["tasks"]["layout"]["status"], "stale")
         self.assertIn("checker implementation", status["tasks"]["layout"]["reason"])
         self.assertFalse(status["complete"])
         state = workflow.read_json(self.project / "run/state.json")
@@ -534,7 +374,6 @@ class StateTests(unittest.TestCase):
         workflow.atomic_json(self.project / "run/state.json", state)
         legacy = workflow.status_report(self.project)
         self.assertEqual(legacy["tasks"]["layout"]["status"], "stale")
-        self.assertEqual(legacy["tasks"]["final_output_review"]["status"], "stale")
         self.assertFalse(legacy["complete"])
 
     def test_measured_font_bytes_changing_invalidates_layout(self):
@@ -554,76 +393,6 @@ class StateTests(unittest.TestCase):
         self.assertEqual(status["tasks"]["layout"]["status"], "stale")
         self.assertIn("font:", status["tasks"]["layout"]["reason"])
 
-    def test_tiny_thumbnail_cannot_substitute_for_readable_page_inspection(self):
-        self.complete_through("layout")
-        qa = self.image_qa()
-        image = self.project / qa["pages"][0]["path"]
-        Image.new("RGB", (96, 54), "white").save(image)
-        qa["files"][0]["sha256"] = workflow.digest(image)
-        workflow.atomic_json(self.project / "run/render-qa.json", qa)
-        with self.assertRaisesRegex(workflow.WorkflowError, "source canvas resolution"):
-            workflow.record(self.project, "render", "done")
-
-    def test_final_review_requires_current_pptx_and_original_renderer_evidence(self):
-        self.complete_through("export")
-        good = self.final_qa()
-        for mode in ("source_hash", "renderer", "report_hash", "render_source", "missing_report", "page_pending"):
-            qa = copy.deepcopy(good)
-            if mode == "source_hash":
-                qa["source_pptx"]["sha256"] = "0" * 64
-            elif mode == "renderer":
-                qa["renderer"]["name"] = "Different renderer"
-            elif mode == "report_hash":
-                qa["render_report"]["sha256"] = "0" * 64
-            elif mode == "render_source":
-                qa["render_source"] = "source_pptd"
-            elif mode == "missing_report":
-                del qa["render_report"]
-            else:
-                qa["pages"][0]["status"] = "pending"
-            workflow.atomic_json(self.project / "run/final-output-qa.json", qa)
-            with self.subTest(mode=mode), self.assertRaises(workflow.WorkflowError):
-                workflow.record(self.project, "final_output_review", "done")
-        self.assertFalse(workflow.status_report(self.project)["complete"])
-        workflow.atomic_json(self.project / "run/final-output-qa.json", good)
-        workflow.record(self.project, "final_output_review", "done")
-        status = workflow.status_report(self.project)
-        self.assertTrue(status["complete"])
-        self.assertEqual(status["final_pptx_review_status"], "operator_attested")
-        self.assertEqual(status["playback_review"], "not_performed")
-
-    def test_source_preview_paths_cannot_be_relabelled_as_final_pptx_evidence(self):
-        self.complete_through("export")
-        qa = self.final_qa()
-        source = workflow.read_json(self.project / "run/render-qa.json")
-        original = workflow.read_json(self.project / "run/final-render-qa.json")
-        original["pages"] = source["pages"]
-        original["files"] = source["files"] + [original["source_pptx"]]
-        workflow.atomic_json(self.project / "run/final-render-qa.json", original)
-        qa["render_report"]["sha256"] = workflow.digest(self.project / "run/final-render-qa.json")
-        qa["pages"] = [{**page, "status": "passed"} for page in source["pages"]]
-        qa["files"] = original["files"] + [qa["render_report"]]
-        workflow.atomic_json(self.project / "run/final-output-qa.json", qa)
-        with self.assertRaisesRegex(workflow.WorkflowError, "Source-render image paths"):
-            workflow.record(self.project, "final_output_review", "done")
-
-    def test_final_pptx_mutation_invalidates_export_and_final_review(self):
-        self.complete_through("final_output_review")
-        with (self.project / "deck.pptx").open("ab") as stream:
-            stream.write(b"changed after rendering")
-        report = workflow.status_report(self.project)
-        self.assertEqual(report["tasks"]["export"]["status"], "stale")
-        self.assertEqual(report["tasks"]["final_output_review"]["status"], "stale")
-        self.assertFalse(report["complete"])
-
-    def test_static_final_render_cannot_claim_application_playback_without_attestation(self):
-        self.complete_through("export")
-        qa = self.final_qa()
-        qa["playback_review"] = "passed"
-        workflow.atomic_json(self.project / "run/final-output-qa.json", qa)
-        with self.assertRaisesRegex(workflow.WorkflowError, "playback attestation"):
-            workflow.record(self.project, "final_output_review", "done")
-
 
 class DoctorTests(unittest.TestCase):
     def test_doctor_does_not_install_or_probe_app_server_by_default(self):
@@ -632,7 +401,8 @@ class DoctorTests(unittest.TestCase):
             result = workflow.doctor(args)
         probe.assert_not_called()
         self.assertEqual(result["models"], [])
-        self.assertFalse(result["renderer"]["live_verified"])
+        self.assertNotIn("renderer", result)
+        self.assertNotIn("agent-browser", result["tools"])
         self.assertEqual(result["target_desktop"]["evidence"], "user_reported")
 
     def test_minimal_fixture_passes_only_structural_subset(self):

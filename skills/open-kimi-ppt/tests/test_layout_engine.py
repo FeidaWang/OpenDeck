@@ -81,8 +81,8 @@ class BuilderTests(FontCase):
         spec["font"] = {"family": self.family, **self.font_policy["fonts"][self.family]}
         return spec
 
-    def test_all_six_templates_pass_all_palettes_and_export_payload_validation(self):
-        from export_pptx import build_payload
+    def test_all_six_templates_pass_all_palettes_and_project_validation(self):
+        from pptd_project import load_project
         Image.new("RGB", (320, 240), "#ABCDEF").save(self.root / "image.png")
         for palette in ("warm", "neutral", "dark"):
             with self.subTest(palette=palette):
@@ -97,7 +97,7 @@ class BuilderTests(FontCase):
                 self.assertTrue(all(f["verified"] and len(f["sha256"]) == 64 for f in report["fonts"]))
                 self.assertIn("run/layout-spec.json", {f["path"] for f in report["files"]})
                 self.assertTrue((output / "pages/01.page").is_file())
-                build_payload(output / "deck.pptd")
+                load_project(output / "deck.pptd")
 
     def test_initialized_project_is_preserved_and_existing_sources_are_not_overwritten(self):
         output = self.root / "project"
