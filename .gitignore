@@ -13,3 +13,6 @@ __pycache__/
 
 # Local skill install metadata
 _user_meta.json
+
+# Local Python environment created by the README steps
+.venv/
