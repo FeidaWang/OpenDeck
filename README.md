@@ -304,13 +304,9 @@ layout_engine: No module named 'PIL'
 
 ## 9. 许可：能做什么，不能做什么
 
-**用大白话说：可以免费看、免费用、免费改，但不能用于商业目的。** 想商用，需要另外取得作者的许可。
+**用大白话说：可以免费使用、修改、分发，包括商业用途；只需要在你的副本里保留版权声明和许可声明。** 软件按“现状”提供，不附带任何担保。
 
-这个项目采用 [PolyForm Noncommercial License 1.0.0](https://polyformproject.org/licenses/noncommercial/1.0.0)，全文在 [LICENSE](LICENSE)。
-
-我们说它是“**源码公开**”，不说“开源”。区别是：通常说的开源许可证（比如 OSI 认证的那些）必须允许任何人包括商业用途，而这个许可证禁止商用，所以它不是 OSI 意义上的开源许可证。GitHub 页面可能把它标成 `Other`，这是正常的。
-
-上游项目的代码是 MIT 许可。MIT 要求保留原作者的版权声明，所以上游部分仍按 MIT，原文在 [LICENSES/MIT-upstream.txt](LICENSES/MIT-upstream.txt)。哪些部分按哪个许可，见 [NOTICE](NOTICE)。
+这个项目采用 [MIT 许可证](https://opensource.org/license/mit)，全文在 [LICENSE](LICENSE)。
 
 ## 10. 给开发者：运行测试
 

@@ -304,13 +304,9 @@ layout_engine: No module named 'PIL'
 
 ## 9. License: what you can and cannot do
 
-**In plain words: you may look at it, use it and change it for free, but you may not use it for a commercial purpose.** If you want to use it commercially, you need separate permission from the author.
+**In plain words: you may use, change and distribute it for free, commercial use included; you only need to keep the copyright notice and the license notice in your copies.** The software is provided "as is", without any warranty.
 
-The project uses the [PolyForm Noncommercial License 1.0.0](https://polyformproject.org/licenses/noncommercial/1.0.0); the full text is in [LICENSE](LICENSE).
-
-We call it "**source-available**", not "open source". The difference: an open-source license in the usual sense (such as those approved by the OSI) must allow everyone to use the software, commercial use included. This license forbids commercial use, so it is not an OSI open-source license. GitHub may label it `Other`; that is normal.
-
-The upstream project's code is under the MIT license. MIT requires the original author's copyright notice to stay, so the upstream part remains under MIT; its text is in [LICENSES/MIT-upstream.txt](LICENSES/MIT-upstream.txt). Which parts fall under which license is in [NOTICE](NOTICE).
+The project uses the [MIT License](https://opensource.org/license/mit); the full text is in [LICENSE](LICENSE).
 
 ## 10. For developers: run the tests
 
