@@ -1,0 +1,31 @@
+Open Kimi PPT (Claude edition)
+
+This repository combines work under two licenses.
+
+1. Upstream material: MIT
+   This project is derived from "open-kimi-ppt-skill" by binaryify
+   (https://github.com/binaryify/open-kimi-ppt-skill), released under the MIT
+   License, Copyright (c) 2026 Binaryify Zhuang. The code, documents and
+   reference material that come from that project, including the PPTD
+   specification, the design-system references, the slide-category guides, the
+   installer CLI and the original layout and workflow scripts, remain under
+   the MIT License. The full MIT text and the original copyright notice are in
+   LICENSES/MIT-upstream.txt. The MIT License requires that notice to stay
+   with any copy of that material.
+
+2. Changes and additions by Feida Wang: PolyForm Noncommercial 1.0.0
+   Everything in this repository that is not upstream material is
+   Copyright (c) 2026 Feida Wang and is licensed under the PolyForm
+   Noncommercial License 1.0.0 (see LICENSE). That covers the changes made
+   to the upstream-derived files and the files added by this derivative, for
+   example skills/open-kimi-ppt/scripts/pptd_project.py, the removal of the
+   remote rendering path, the changed tests, the README files and this notice.
+   In a file that mixes both, the MIT License applies to the upstream
+   contribution and PolyForm Noncommercial applies to Feida Wang's
+   contribution.
+
+This project is not affiliated with, endorsed by, or connected to Kimi or
+Moonshot AI.
+
+Commercial use of Feida Wang's part needs a separate license from the author.
+The MIT-licensed upstream part can be used under the MIT terms on its own.

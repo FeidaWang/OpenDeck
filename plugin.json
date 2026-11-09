@@ -4,15 +4,15 @@
   "version": "1.5.0-claude.1",
   "description": "Create editable PPTD presentation projects with one active model and deterministic, font-measured layout checks. Does not render slides or write PPTX.",
   "author": {
-    "name": "binaryify"
+    "name": "Feida Wang"
   },
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "extensions": {
     "com.openai": {
       "interface": {
         "displayName": "Open Kimi PPT",
         "shortDescription": "Build and check slide decks",
-        "longDescription": "Create editable PPTD presentation projects using the current Codex model and reasoning setting. Includes measured text layout, curated templates, persistent progress and source checks. It cannot render slides or write PPTX files.",
+        "longDescription": "Create editable PPTD presentation projects using the current Codex model and reasoning setting. Includes measured text layout, curated templates, persistent progress and source checks. It cannot render slides or write PPTX files. Derived from open-kimi-ppt-skill by binaryify (MIT).",
         "defaultPrompt": "Use Open Kimi PPT with my current model and reasoning setting to build a clear editable PPTD presentation and check its layout."
       }
     }

@@ -2,8 +2,8 @@
   "name": "open-kimi-ppt-skill",
   "version": "1.5.0-claude.1",
   "description": "Editable PPTD presentation workflow for one active host model, with measured layout checks. Does not render slides or write PPTX.",
-  "license": "MIT",
-  "author": "binaryify",
+  "license": "SEE LICENSE IN LICENSE",
+  "author": "Feida Wang",
   "homepage": "https://github.com/binaryify/open-kimi-ppt-skill#readme",
   "repository": {
     "type": "git",
@@ -40,9 +40,12 @@
     "skills/open-kimi-ppt/requirements*.txt",
     "README.md",
     "README_EN.md",
+    "LICENSE",
+    "LICENSES/",
+    "NOTICE",
+    "CHANGELOG.md",
+    "CHANGELOG_EN.md",
     "AGENTS.md",
-    "CODEX_START.md",
-    "UPGRADE_NOTES.md",
     "examples/codex/",
     "theme.md",
     "theme_EN.md",
@@ -57,5 +60,11 @@
   },
   "engines": {
     "node": ">=18"
-  }
+  },
+  "contributors": [
+    {
+      "name": "binaryify",
+      "url": "https://github.com/binaryify/open-kimi-ppt-skill"
+    }
+  ]
 }
