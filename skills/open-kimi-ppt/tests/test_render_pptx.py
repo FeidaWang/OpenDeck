@@ -12,7 +12,10 @@ import unittest
 from unittest import mock
 import zipfile
 
-import fitz
+try:
+    import fitz
+except ImportError:  # optional dependency from requirements-render.txt
+    raise unittest.SkipTest("PyMuPDF is not installed; render_pptx tests skipped")
 
 SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "render_pptx.py"
 SPEC = importlib.util.spec_from_file_location("render_pptx", SCRIPT)

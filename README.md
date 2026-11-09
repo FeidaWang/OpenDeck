@@ -324,6 +324,6 @@ layout_engine: No module named 'PIL'
 node --test
 ```
 
-前一条应该以 `OK` 结尾，后一条应该显示 `fail 0`。测试不会联网，也不会安装任何东西。
+前一条应该以 `OK` 结尾，可能带着 `skipped=1`：那是因为可选的渲染零件（PyMuPDF）没装，对应的测试被跳过了，不影响结果。后一条应该显示 `fail 0`。测试不会联网，也不会安装任何东西。
 
 更多背景：工作流和报告格式见 [codex-harness.md](skills/open-kimi-ppt/reference/codex-harness.md)，这个包能做和不能做的事见 [rendering-boundaries.md](skills/open-kimi-ppt/reference/rendering-boundaries.md)，内置的设计主题见 [theme.md](theme.md)，改动记录见 [CHANGELOG.md](CHANGELOG.md)。

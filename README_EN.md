@@ -324,6 +324,6 @@ The upstream project's code is under the MIT license. MIT requires the original 
 node --test
 ```
 
-The first should end with `OK`; the second should show `fail 0`. The tests do not use the network and install nothing.
+The first should end with `OK`, possibly with `skipped=1`: that is because the optional rendering part (PyMuPDF) is not installed, so those tests are skipped; it does not matter. The second should show `fail 0`. The tests do not use the network and install nothing.
 
 More background: the workflow and report formats are in [codex-harness.md](skills/open-kimi-ppt/reference/codex-harness.md), what this package can and cannot do is in [rendering-boundaries.md](skills/open-kimi-ppt/reference/rendering-boundaries.md), the built-in design themes are in [theme_EN.md](theme_EN.md), and the change log is [CHANGELOG_EN.md](CHANGELOG_EN.md).
