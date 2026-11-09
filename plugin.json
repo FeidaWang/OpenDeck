@@ -11,7 +11,7 @@
     "com.openai": {
       "interface": {
         "displayName": "Open Kimi PPT",
-        "shortDescription": "Build and check PPTD slide decks",
+        "shortDescription": "Build and check slide decks",
         "longDescription": "Create editable PPTD presentation projects using the current Codex model and reasoning setting. Includes measured text layout, curated templates, persistent progress and source checks. It cannot render slides or write PPTX files.",
         "defaultPrompt": "Use Open Kimi PPT with my current model and reasoning setting to build a clear editable PPTD presentation and check its layout."
       }
