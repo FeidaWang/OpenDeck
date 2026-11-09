@@ -1,5 +1,5 @@
 version: v2
-title: Open Kimi PPT Minimal Test
+title: OpenDeck Minimal Test
 size: [960, 540]
 pages:
   - pages/01.page

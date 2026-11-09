@@ -1,4 +1,0 @@
-interface:
-  display_name: "Open Kimi PPT for Codex"
-  short_description: "Editable PPTD slides with measured layout checks"
-  default_prompt: "Use $open-kimi-ppt with my current model and reasoning setting to build an editable PPTD presentation and check its measured layout."

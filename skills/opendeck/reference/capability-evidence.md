@@ -1,6 +1,6 @@
 # Capability and quality evidence
 
-Release: 1.5.0-claude.1. Updated 9 November 2026.
+Release: 1.6.0-claude.1. Updated 9 November 2026.
 
 ## Evidence levels
 

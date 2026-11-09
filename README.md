@@ -1,4 +1,4 @@
-# Open Kimi PPT
+# OpenDeck
 
 [English](README.md) | [简体中文](README_ZH.md)
 
@@ -92,7 +92,7 @@ No output means it worked; a `.venv` folder appears.
 **Step 4: put the needed parts into the room.** This needs the internet and takes a few tens of seconds.
 
 ```bash
-.venv/bin/python -m pip install -r skills/open-kimi-ppt/requirements.txt
+.venv/bin/python -m pip install -r skills/opendeck/requirements.txt
 ```
 
 At the end you should see a line `Successfully installed Pillow-… PyYAML-…` (version numbers will differ). A trailing `[notice] A new release of pip is available` can be ignored.
@@ -125,7 +125,7 @@ No output means it worked. The list says: 2 slides in total; slide 1 is a cover;
 **Step 2: let the tool build the deck.**
 
 ```bash
-.venv/bin/python skills/open-kimi-ppt/scripts/layout_engine.py build --spec my-spec.json --output offsite-deck
+.venv/bin/python skills/opendeck/scripts/layout_engine.py build --spec my-spec.json --output offsite-deck
 ```
 
 You should see:
@@ -166,7 +166,7 @@ offsite-deck/pages:
 **Step 4: check it again on its own.** After you edit a page file, you can re-check it at any time:
 
 ```bash
-.venv/bin/python skills/open-kimi-ppt/scripts/layout_quality.py offsite-deck/deck.pptd
+.venv/bin/python skills/opendeck/scripts/layout_quality.py offsite-deck/deck.pptd
 ```
 
 You should see a long block of text that contains `"status": "passed"`.
@@ -179,7 +179,7 @@ layout_engine: slide 2 / bullet: bullets need 380.0px, available 356.0px. Split 
 
 That means it does not fit. The tool will not shrink the text until it is unreadable and will not delete your content; it asks you to change the words.
 
-Available layouts are `cover`, `bullets`, `two_column`, `metrics`, `table` and `image`. The fields each one needs are in the table in [layout-quality.md](skills/open-kimi-ppt/reference/layout-quality.md). The repository also has a four-page example: `examples/codex/layout-spec.json`.
+Available layouts are `cover`, `bullets`, `two_column`, `metrics`, `table` and `image`. The fields each one needs are in the table in [layout-quality.md](skills/opendeck/reference/layout-quality.md). The repository also has a four-page example: `examples/codex/layout-spec.json`.
 
 ## 5. Chinese (and other non-Latin) content
 
@@ -208,12 +208,12 @@ This example uses the DengXian font that ships with Microsoft PowerPoint on macO
 If you use an AI coding assistant such as Claude Code or Codex, you can install this tool as its "skill" and then ask it in one sentence to make deck source files. This needs Node.js (section 2, c).
 
 ```bash
-node bin/open-kimi-ppt-skill.js install --target "$HOME/.claude/skills"
+node bin/opendeck.js install --target "$HOME/.claude/skills"
 ```
 
-You should see `Installed open-kimi-ppt to …/.claude/skills/open-kimi-ppt`. For Codex, change the folder to `"$HOME/.codex/skills"`.
+You should see `Installed opendeck to …/.claude/skills/opendeck`. For Codex, change the folder to `"$HOME/.codex/skills"`.
 
-After installing, start a new session in your assistant and say: "Use open-kimi-ppt to make a 6-slide deck source on …"
+After installing, start a new session in your assistant and say: "Use opendeck to make a 6-slide deck source on …"
 
 I have run only the install command above (into a temporary folder). I have not tested every AI application to see whether it recognises and uses the skill correctly. Please check any facts the AI writes.
 
@@ -239,10 +239,10 @@ ERROR: Could not find a version that satisfies the requirement Pillow<14,>=12 �
 ERROR: No matching distribution found for Pillow<14,>=12
 ```
 
-**Symptom 2:** running a command such as `node bin/open-kimi-ppt-skill.js codex doctor` fails with:
+**Symptom 2:** running a command such as `node bin/opendeck.js codex doctor` fails with:
 
 ```text
-Error: Python 3.10+ is required for the Codex workflow. Set OPEN_KIMI_PPT_PYTHON to a Python executable path. No installation was attempted.
+Error: Python 3.10+ is required for the Codex workflow. Set OPENDECK_PYTHON to a Python executable path. No installation was attempted.
 ```
 
 **Cause:** your `python3` is older than 3.10 (the one that ships with macOS is 3.9.6, which is what I hit on my own machine).
@@ -311,7 +311,7 @@ The project uses the [MIT License](https://opensource.org/license/mit); the full
 ## 10. For developers: run the tests
 
 ```bash
-.venv/bin/python -m unittest discover -s skills/open-kimi-ppt/tests -p 'test_*.py' -q
+.venv/bin/python -m unittest discover -s skills/opendeck/tests -p 'test_*.py' -q
 ```
 
 ```bash
@@ -320,4 +320,4 @@ node --test
 
 The first should end with `OK`, possibly with `skipped=1`: that is because the optional rendering part (PyMuPDF) is not installed, so those tests are skipped; it does not matter. The second should show `fail 0`. The tests do not use the network and install nothing.
 
-More background: the workflow and report formats are in [codex-harness.md](skills/open-kimi-ppt/reference/codex-harness.md), what this package can and cannot do is in [rendering-boundaries.md](skills/open-kimi-ppt/reference/rendering-boundaries.md), the built-in design themes are in [theme.md](theme.md), and the change log is [CHANGELOG.md](CHANGELOG.md).
+More background: the workflow and report formats are in [codex-harness.md](skills/opendeck/reference/codex-harness.md), what this package can and cannot do is in [rendering-boundaries.md](skills/opendeck/reference/rendering-boundaries.md), the built-in design themes are in [theme.md](theme.md), and the change log is [CHANGELOG.md](CHANGELOG.md).

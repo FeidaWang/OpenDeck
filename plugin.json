@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
-  "name": "open-kimi-ppt-skill",
-  "version": "1.5.0-claude.1",
+  "name": "opendeck",
+  "version": "1.6.0-claude.1",
   "description": "Create editable PPTD presentation projects with one active model and deterministic, font-measured layout checks. Does not render slides or write PPTX.",
   "author": {
     "name": "Feida Wang"
@@ -10,10 +10,10 @@
   "extensions": {
     "com.openai": {
       "interface": {
-        "displayName": "Open Kimi PPT",
+        "displayName": "OpenDeck",
         "shortDescription": "Build and check slide decks",
         "longDescription": "Create editable PPTD presentation projects using the current Codex model and reasoning setting. Includes measured text layout, curated templates, persistent progress and source checks. It cannot render slides or write PPTX files.",
-        "defaultPrompt": "Use Open Kimi PPT with my current model and reasoning setting to build a clear editable PPTD presentation and check its layout."
+        "defaultPrompt": "Use OpenDeck with my current model and reasoning setting to build a clear editable PPTD presentation and check its layout."
       }
     }
   }

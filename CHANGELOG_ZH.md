@@ -2,6 +2,21 @@
 
 本文件只记录这个衍生版本的改动。上游项目的历史在它自己的仓库里。
 
+## 1.6.0-claude.1 — 2026-11-09
+
+### 变更
+
+- 项目名统一为 **OpenDeck**。此前仓库叫 OpenDeck，文件里用的却还是早先的名字 `open-kimi-ppt`。
+- 包名与命令：`open-kimi-ppt-skill` 改为 `opendeck`（`bin/opendeck.js`）。
+- 技能名与目录：`open-kimi-ppt` 改为 `opendeck`（`skills/opendeck/`）。安装程序写入的文件夹名也是 `opendeck`。
+- 环境变量：`OPEN_KIMI_PPT_PYTHON` 改为 `OPENDECK_PYTHON`。
+
+### 升级须知
+
+- 以旧文件夹名 `open-kimi-ppt` 装过的技能不会被自动删除或改名。请重新安装，再自己删掉旧文件夹。
+- 如果你设置过 `OPEN_KIMI_PPT_PYTHON`，请改设 `OPENDECK_PYTHON`。
+- 已经做好的 PPTD 项目不受影响。
+
 ## 1.5.0-claude.1 — 2026-11-09
 
 ### 删除

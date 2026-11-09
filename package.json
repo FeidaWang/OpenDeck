@@ -1,6 +1,6 @@
 {
-  "name": "open-kimi-ppt-skill",
-  "version": "1.5.0-claude.1",
+  "name": "opendeck",
+  "version": "1.6.0-claude.1",
   "description": "Editable PPTD presentation workflow for one active host model, with measured layout checks. Does not render slides or write PPTX.",
   "license": "MIT",
   "author": "Feida Wang",
@@ -26,18 +26,18 @@
   ],
   "type": "module",
   "bin": {
-    "open-kimi-ppt-skill": "bin/open-kimi-ppt-skill.js"
+    "opendeck": "bin/opendeck.js"
   },
   "files": [
     "bin/",
     "plugin.json",
-    "skills/open-kimi-ppt/SKILL.md",
-    "skills/open-kimi-ppt/reference/",
-    "skills/open-kimi-ppt/references/",
-    "skills/open-kimi-ppt/scripts/",
-    "skills/open-kimi-ppt/config/",
-    "skills/open-kimi-ppt/agents/",
-    "skills/open-kimi-ppt/requirements*.txt",
+    "skills/opendeck/SKILL.md",
+    "skills/opendeck/reference/",
+    "skills/opendeck/references/",
+    "skills/opendeck/scripts/",
+    "skills/opendeck/config/",
+    "skills/opendeck/agents/",
+    "skills/opendeck/requirements*.txt",
     "README.md",
     "README_ZH.md",
     "LICENSE",

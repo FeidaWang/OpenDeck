@@ -1,9 +1,9 @@
 ---
-name: open-kimi-ppt
+name: opendeck
 description: Create and revise editable PPTD presentation projects using the current host model at its current reasoning setting. Use for slide decks, presentation redesigns and PPTD projects; measure layouts and preserve content. Produces PPTD source and local layout checks only; it cannot render or export PPTX.
 ---
 
-# Open Kimi PPT
+# OpenDeck
 
 Create a clear, coherent presentation with editable text, numbers, tables and diagrams. Deliver the PPTD source project with its structural and layout check results. This package cannot render slides to images or write PPTX; say so plainly instead of implying otherwise. Read only the references needed for the current task.
 

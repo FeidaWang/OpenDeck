@@ -7,7 +7,7 @@ import { spawn, spawnSync } from "node:child_process";
 import { stdin as input, stdout as output } from "node:process";
 import { fileURLToPath } from "node:url";
 
-const SKILL_NAME = "open-kimi-ppt";
+const SKILL_NAME = "opendeck";
 const MIN_NODE_MAJOR = 18;
 const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const sourceDirectory = join(packageRoot, "skills", SKILL_NAME);
@@ -35,7 +35,7 @@ function printHelp(command) {
     console.log(`Plan and inspect a single-model Codex presentation workflow.
 
 Usage (from the unpacked bundle):
-  node bin/open-kimi-ppt-skill.js codex <command> [arguments]
+  node bin/opendeck.js codex <command> [arguments]
 
 Commands:
   doctor     Report local tools and supplied host capabilities
@@ -47,7 +47,7 @@ Commands:
   layout     Measure and audit source layout
 
 Use "codex <command> --help" for the Python workflow's exact arguments.
-Requires Python 3.10+. Set OPEN_KIMI_PPT_PYTHON to an executable path if needed.
+Requires Python 3.10+. Set OPENDECK_PYTHON to an executable path if needed.
 Help and doctor never install a skill or change Codex configuration.
 `);
     return;
@@ -55,8 +55,8 @@ Help and doctor never install a skill or change Codex configuration.
   console.log(`Install ${SKILL_NAME} for your AI coding agent and run its local deck checks.
 
 Usage:
-  node bin/open-kimi-ppt-skill.js [install] [options]
-  node bin/open-kimi-ppt-skill.js codex <command> [arguments]
+  node bin/opendeck.js [install] [options]
+  node bin/opendeck.js codex <command> [arguments]
 
 Install options:
   --target <directory>  Skills directory (repeatable)
@@ -71,8 +71,8 @@ In an interactive terminal (no --target / --yes / --all), a checklist is shown:
   ↑/↓ move  space select  a all  enter confirm
 
 For agents / CI, prefer:
-  node bin/open-kimi-ppt-skill.js install -y
-  node bin/open-kimi-ppt-skill.js codex doctor
+  node bin/opendeck.js install -y
+  node bin/opendeck.js codex doctor
 
 Use these commands from the unpacked bundle to keep this Codex edition.
 Explicit install replaces an existing skill using staging and rollback.
@@ -190,7 +190,7 @@ async function promptInstallTargets() {
     if (!initial) {
       output.write(`\u001b[${lines}A`);
     }
-    output.write("Install open-kimi-ppt to which skills directories?\n");
+    output.write("Install opendeck to which skills directories?\n");
     output.write("↑/↓ move · space select · a all · enter confirm · ctrl+c cancel\n");
     for (const [index, choice] of choices.entries()) {
       const pointer = index === cursor ? "❯" : " ";
@@ -371,7 +371,7 @@ async function installSkill(options) {
 }
 
 function findPython() {
-  const override = process.env.OPEN_KIMI_PPT_PYTHON;
+  const override = process.env.OPENDECK_PYTHON;
   const candidates = override ? [override] : ["python3", "python"];
   for (const candidate of candidates) {
     const probe = spawnSync(candidate, ["-c", "import sys; raise SystemExit(0 if sys.version_info >= (3, 10) else 1)"], {
@@ -379,7 +379,7 @@ function findPython() {
     });
     if (!probe.error && probe.status === 0) return candidate;
   }
-  throw new Error("Python 3.10+ is required for the Codex workflow. Set OPEN_KIMI_PPT_PYTHON to a Python executable path. No installation was attempted.");
+  throw new Error("Python 3.10+ is required for the Codex workflow. Set OPENDECK_PYTHON to a Python executable path. No installation was attempted.");
 }
 
 async function runCodex(args) {

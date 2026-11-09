@@ -12,10 +12,10 @@ The diagnostic and help commands do not install dependencies. Missing modules yi
 
 ```bash
 python3 -m venv .venv
-.venv/bin/python -m pip install -r skills/open-kimi-ppt/requirements.txt
+.venv/bin/python -m pip install -r skills/opendeck/requirements.txt
 ```
 
-Windows uses `.venv\Scripts\python.exe`. The CLI bridge also accepts `OPEN_KIMI_PPT_PYTHON` as the path to the chosen interpreter. Do not embed quotes inside the variable's value.
+Windows uses `.venv\Scripts\python.exe`. The CLI bridge also accepts `OPENDECK_PYTHON` as the path to the chosen interpreter. Do not embed quotes inside the variable's value.
 
 ## What it cannot do
 

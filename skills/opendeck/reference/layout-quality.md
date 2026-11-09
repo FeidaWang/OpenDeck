@@ -7,7 +7,7 @@ A source-layout pass means the supported source checks passed. It does **not** c
 ## Build a deck
 
 ```bash
-python skills/open-kimi-ppt/scripts/layout_engine.py build \
+python skills/opendeck/scripts/layout_engine.py build \
   --spec examples/codex/layout-spec.json \
   --output /absolute/path/to/project
 ```
@@ -87,7 +87,7 @@ Missing families, style substitutions and detected missing glyphs are hard error
 ## Check arbitrary PPTD
 
 ```bash
-python skills/open-kimi-ppt/scripts/layout_quality.py check /absolute/path/to/project/deck.pptd \
+python skills/opendeck/scripts/layout_quality.py check /absolute/path/to/project/deck.pptd \
   --output /absolute/path/to/project/run/layout-qa.json
 ```
 

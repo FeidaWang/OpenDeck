@@ -1,4 +1,4 @@
-# Open Kimi PPT
+# OpenDeck
 
 [English](README.md) | [简体中文](README_ZH.md)
 
@@ -92,7 +92,7 @@ python3 -m venv .venv
 **第 4 步：把需要的零件装进小房间。** 需要联网，几十秒。
 
 ```bash
-.venv/bin/python -m pip install -r skills/open-kimi-ppt/requirements.txt
+.venv/bin/python -m pip install -r skills/opendeck/requirements.txt
 ```
 
 你应该在最后看到一行 `Successfully installed Pillow-… PyYAML-…`（版本号会不同）。结尾的 `[notice] A new release of pip is available` 可以忽略。
@@ -125,7 +125,7 @@ EOF
 **第 2 步：让工具搭出幻灯片。**
 
 ```bash
-.venv/bin/python skills/open-kimi-ppt/scripts/layout_engine.py build --spec my-spec.json --output offsite-deck
+.venv/bin/python skills/opendeck/scripts/layout_engine.py build --spec my-spec.json --output offsite-deck
 ```
 
 你应该看到：
@@ -166,7 +166,7 @@ offsite-deck/pages:
 **第 4 步：再单独检查一遍。** 你改过页面文件后，可以随时重新检查：
 
 ```bash
-.venv/bin/python skills/open-kimi-ppt/scripts/layout_quality.py offsite-deck/deck.pptd
+.venv/bin/python skills/opendeck/scripts/layout_quality.py offsite-deck/deck.pptd
 ```
 
 你应该看到一大段文字，其中有 `"status": "passed"`。
@@ -179,7 +179,7 @@ layout_engine: slide 2 / bullet: bullets need 380.0px, available 356.0px. Split 
 
 意思是：放不下。它不会把字缩到看不清，也不会删你的内容，而是让你改文字。
 
-可以用的版式有：`cover`（封面）、`bullets`（要点）、`two_column`（两栏）、`metrics`（数字卡片）、`table`（表格）、`image`（图片）。每种需要哪些字段，见 [layout-quality.md](skills/open-kimi-ppt/reference/layout-quality.md) 里的表格。仓库里还有一份四页的例子：`examples/codex/layout-spec.json`。
+可以用的版式有：`cover`（封面）、`bullets`（要点）、`two_column`（两栏）、`metrics`（数字卡片）、`table`（表格）、`image`（图片）。每种需要哪些字段，见 [layout-quality.md](skills/opendeck/reference/layout-quality.md) 里的表格。仓库里还有一份四页的例子：`examples/codex/layout-spec.json`。
 
 ## 5. 中文内容怎么做
 
@@ -208,12 +208,12 @@ layout_engine: No exact usable regular/bold font pair covers this deck. Supply f
 如果你用 Claude Code 或 Codex 之类的 AI 编程助手，可以把这个工具装成它的“技能”，然后用一句话让它做幻灯片源文件。需要 Node.js（第 2 节 c）。
 
 ```bash
-node bin/open-kimi-ppt-skill.js install --target "$HOME/.claude/skills"
+node bin/opendeck.js install --target "$HOME/.claude/skills"
 ```
 
-你应该看到 `Installed open-kimi-ppt to …/.claude/skills/open-kimi-ppt`。给 Codex 用的话，把目录换成 `"$HOME/.codex/skills"`。
+你应该看到 `Installed opendeck to …/.claude/skills/opendeck`。给 Codex 用的话，把目录换成 `"$HOME/.codex/skills"`。
 
-装好后，重开 AI 助手的会话，对它说：“用 open-kimi-ppt 做一份 6 页的幻灯片源文件，主题是……”
+装好后，重开 AI 助手的会话，对它说：“用 opendeck 做一份 6 页的幻灯片源文件，主题是……”
 
 我只亲手跑过上面的安装命令（装到了一个临时文件夹），没有逐一在各家 AI 软件里实测它是否识别并正确使用这个技能。AI 做出来的内容，也请你自己核对事实。
 
@@ -239,10 +239,10 @@ ERROR: Could not find a version that satisfies the requirement Pillow<14,>=12 �
 ERROR: No matching distribution found for Pillow<14,>=12
 ```
 
-**症状 2：** 运行 `node bin/open-kimi-ppt-skill.js codex doctor` 这类命令时出现：
+**症状 2：** 运行 `node bin/opendeck.js codex doctor` 这类命令时出现：
 
 ```text
-Error: Python 3.10+ is required for the Codex workflow. Set OPEN_KIMI_PPT_PYTHON to a Python executable path. No installation was attempted.
+Error: Python 3.10+ is required for the Codex workflow. Set OPENDECK_PYTHON to a Python executable path. No installation was attempted.
 ```
 
 **原因：** 你的 `python3` 低于 3.10（macOS 自带的是 3.9.6，我在自己的机器上遇到的就是这个）。
@@ -311,7 +311,7 @@ layout_engine: No module named 'PIL'
 ## 10. 给开发者：运行测试
 
 ```bash
-.venv/bin/python -m unittest discover -s skills/open-kimi-ppt/tests -p 'test_*.py' -q
+.venv/bin/python -m unittest discover -s skills/opendeck/tests -p 'test_*.py' -q
 ```
 
 ```bash
@@ -320,4 +320,4 @@ node --test
 
 前一条应该以 `OK` 结尾，可能带着 `skipped=1`：那是因为可选的渲染零件（PyMuPDF）没装，对应的测试被跳过了，不影响结果。后一条应该显示 `fail 0`。测试不会联网，也不会安装任何东西。
 
-更多背景：工作流和报告格式见 [codex-harness.md](skills/open-kimi-ppt/reference/codex-harness.md)，这个包能做和不能做的事见 [rendering-boundaries.md](skills/open-kimi-ppt/reference/rendering-boundaries.md)，内置的设计主题见 [theme_ZH.md](theme_ZH.md)，改动记录见 [CHANGELOG_ZH.md](CHANGELOG_ZH.md)。
+更多背景：工作流和报告格式见 [codex-harness.md](skills/opendeck/reference/codex-harness.md)，这个包能做和不能做的事见 [rendering-boundaries.md](skills/opendeck/reference/rendering-boundaries.md)，内置的设计主题见 [theme_ZH.md](theme_ZH.md)，改动记录见 [CHANGELOG_ZH.md](CHANGELOG_ZH.md)。

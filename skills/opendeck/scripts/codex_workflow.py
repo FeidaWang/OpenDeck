@@ -176,7 +176,7 @@ def probe_models(executable: str, timeout: float = 20) -> list[dict]:
 
     try:
         send({"id": 0, "method": "initialize", "params": {
-            "clientInfo": {"name": "open_kimi_ppt_doctor", "title": "Open Kimi PPT doctor", "version": "1.5.0"}}})
+            "clientInfo": {"name": "opendeck_doctor", "title": "OpenDeck doctor", "version": "1.5.0"}}})
         receive(0)
         send({"method": "initialized"})
         models, cursor = [], None

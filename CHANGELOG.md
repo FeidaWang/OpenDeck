@@ -2,6 +2,21 @@
 
 This file lists changes in this derivative. The history of the upstream project is in its own repository.
 
+## 1.6.0-claude.1 — 2026-11-09
+
+### Changed
+
+- The project is now called **OpenDeck** everywhere. Before this release the repository was named OpenDeck while the files still used the earlier name `open-kimi-ppt`.
+- Package name and command: `open-kimi-ppt-skill` is now `opendeck` (`bin/opendeck.js`).
+- Skill name and folder: `open-kimi-ppt` is now `opendeck` (`skills/opendeck/`). The installer writes to a folder named `opendeck`.
+- Environment variable: `OPEN_KIMI_PPT_PYTHON` is now `OPENDECK_PYTHON`.
+
+### Upgrading
+
+- A skill installed under the old folder name `open-kimi-ppt` is not removed or renamed for you. Install again, then delete the old folder yourself.
+- If you set `OPEN_KIMI_PPT_PYTHON`, set `OPENDECK_PYTHON` instead.
+- PPTD projects you already made are unaffected.
+
 ## 1.5.0-claude.1 — 2026-11-09
 
 ### Removed
