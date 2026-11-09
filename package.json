@@ -4,13 +4,13 @@
   "description": "Editable PPTD presentation workflow for one active host model, with measured layout checks. Does not render slides or write PPTX.",
   "license": "SEE LICENSE IN LICENSE",
   "author": "Feida Wang",
-  "homepage": "https://github.com/binaryify/open-kimi-ppt-skill#readme",
+  "homepage": "https://github.com/FeidaWang/OpenDeck#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/binaryify/open-kimi-ppt-skill.git"
+    "url": "git+https://github.com/FeidaWang/OpenDeck.git"
   },
   "bugs": {
-    "url": "https://github.com/binaryify/open-kimi-ppt-skill/issues"
+    "url": "https://github.com/FeidaWang/OpenDeck/issues"
   },
   "keywords": [
     "ppt",
